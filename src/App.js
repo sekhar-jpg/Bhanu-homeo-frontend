@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import axios from 'axios';
 import FaceUpload from './components/FaceUpload';
 import AddCase from './components/AddCase'; // ✅ Import your new component
+import FollowUps from './components/FollowUps'; // ✅ Import FollowUps component
 
 // RemedyFinder Component
 function RemedyFinder() {
@@ -61,6 +62,7 @@ function App() {
         <Route path="/" element={<RemedyFinder />} />
         <Route path="/add-case" element={<AddCase />} /> {/* ✅ New Route */}
         <Route path="/analyze-face" element={<FaceUpload />} />
+        <Route path="/follow-ups" element={<FollowUps />} /> {/* ✅ New FollowUp Route */}
       </Routes>
     </Router>
   );
