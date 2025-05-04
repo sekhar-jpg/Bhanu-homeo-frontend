@@ -1,1 +1,1 @@
-# Bhanu-homeo-frontend
+# Bhanu-homeo-ai
