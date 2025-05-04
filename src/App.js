@@ -1,71 +1,29 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import axios from 'axios';
-import FaceUpload from './components/FaceUpload';
-import AddCase from './components/AddCase'; // ✅ Import your new component
-import FollowUps from './components/FollowUps'; // ✅ Import FollowUps component
+import FollowUpForm from './components/FollowUpForm';
+import TodayFollowUps from './components/TodayFollowUps';
 
-// RemedyFinder Component
-function RemedyFinder() {
-  const [caseDescription, setCaseDescription] = useState('');
-  const [remedies, setRemedies] = useState([]);
-  const [loading, setLoading] = useState(false);
+const App = () => {
+  const [selectedCaseId, setSelectedCaseId] = useState(null);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setLoading(true);
-
-    try {
-      const response = await axios.post('https://bhanu-case-app.onrender.com/api/get-remedy', {
-        description: caseDescription,
-      });
-      setRemedies(response.data.remedies);
-    } catch (error) {
-      console.error("Error fetching remedies:", error);
-      setRemedies(["Error fetching remedies. Please try again."]);
-    }
-
-    setLoading(false);
+  // Function to update the state when a new follow-up is added
+  const handleFollowUpAdded = (newFollowUp) => {
+    console.log('New Follow-Up Added:', newFollowUp);
+    // Optionally, refresh the list of today's follow-ups or update the UI
   };
 
   return (
     <div>
-      <h2>Find the Right Homeopathic Remedy</h2>
-      <form onSubmit={handleSubmit}>
-        <textarea
-          value={caseDescription}
-          onChange={(e) => setCaseDescription(e.target.value)}
-          placeholder="Describe the symptoms..."
-        />
-        <button type="submit" disabled={loading}>
-          {loading ? "Loading..." : "Submit"}
-        </button>
-      </form>
+      <h1>Bhanu Homeopathy</h1>
+      
+      {/* Show today's follow-ups */}
+      <TodayFollowUps />
 
-      <div>
-        <h3>Suggested Remedies:</h3>
-        <ul>
-          {remedies.map((remedy, index) => (
-            <li key={index}>{remedy}</li>
-          ))}
-        </ul>
-      </div>
+      {/* When a case is selected, display the follow-up form */}
+      {selectedCaseId && (
+        <FollowUpForm caseId={selectedCaseId} onFollowUpAdded={handleFollowUpAdded} />
+      )}
     </div>
   );
-}
-
-// Main App Component
-function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<RemedyFinder />} />
-        <Route path="/add-case" element={<AddCase />} /> {/* ✅ New Route */}
-        <Route path="/analyze-face" element={<FaceUpload />} />
-        <Route path="/follow-ups" element={<FollowUps />} /> {/* ✅ New FollowUp Route */}
-      </Routes>
-    </Router>
-  );
-}
+};
 
 export default App;
