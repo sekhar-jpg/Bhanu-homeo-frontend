@@ -11,7 +11,8 @@ document.getElementById("submitCaseForm").addEventListener("submit", function(ev
   });
 
   // Send case data as JSON to the backend
-  fetch('/submit-case', {
+  fetch('https://backend-bhanu-app.onrender.com/submit-case'
+, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json', // Ensure data is sent as JSON
