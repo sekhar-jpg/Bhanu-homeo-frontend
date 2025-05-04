@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import axios from 'axios';
+import FaceUpload from './components/FaceUpload'; // ✅ Moved to top
 
 // RemedyFinder Component
 function RemedyFinder() {
@@ -54,15 +55,12 @@ function RemedyFinder() {
   );
 }
 
-// FaceUpload Component
-import FaceUpload from './components/FaceUpload';
-
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<RemedyFinder />} /> {/* Route for the home page */}
-        <Route path="/analyze-face" element={<FaceUpload />} /> {/* Route for the face analysis feature */}
+        <Route path="/" element={<RemedyFinder />} />
+        <Route path="/analyze-face" element={<FaceUpload />} />
       </Routes>
     </Router>
   );
