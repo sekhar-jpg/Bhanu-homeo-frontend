@@ -1,16 +1,29 @@
 const mongoose = require('mongoose');
 
 const caseSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  age: { type: Number, required: true },
-  gender: { type: String, required: true },
-  maritalStatus: { type: String, required: true },
-  occupation: { type: String, required: true },
-  address: { type: String, required: true },
-  phone: { type: String, required: true },
-  dateOfVisit: { type: Date, required: true },
-  chiefComplaints: { type: String, required: true },
-  followUpDate: { type: Date }, // Optional field for follow-up date
-}, { timestamps: true });
+  patientName: {
+    type: String,
+    required: true,
+  },
+  phoneNumber: {
+    type: String,
+    required: true,
+  },
+  symptoms: {
+    type: String,
+    required: true,
+  },
+  remedyGiven: {
+    type: String,
+  },
+  followUpDate: {
+    type: Date, // 🔁 This field is used for follow-up tracking
+    required: false,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
 
 module.exports = mongoose.model('Case', caseSchema);
