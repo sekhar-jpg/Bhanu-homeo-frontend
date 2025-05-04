@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import axios from 'axios';
-import FaceUpload from './components/FaceUpload'; // ✅ Moved to top
+import FaceUpload from './components/FaceUpload';
+import AddCase from './components/AddCase'; // ✅ Import your new component
 
 // RemedyFinder Component
 function RemedyFinder() {
@@ -9,17 +10,14 @@ function RemedyFinder() {
   const [remedies, setRemedies] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
 
     try {
-      // Call the backend API to get remedies based on description
       const response = await axios.post('https://bhanu-case-app.onrender.com/api/get-remedy', {
         description: caseDescription,
       });
-
       setRemedies(response.data.remedies);
     } catch (error) {
       console.error("Error fetching remedies:", error);
@@ -55,11 +53,13 @@ function RemedyFinder() {
   );
 }
 
+// Main App Component
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<RemedyFinder />} />
+        <Route path="/add-case" element={<AddCase />} /> {/* ✅ New Route */}
         <Route path="/analyze-face" element={<FaceUpload />} />
       </Routes>
     </Router>
