@@ -53,6 +53,7 @@ function displayCaseDetails(caseData) {
     </ul>
   `;
 }
+
 function searchFollowUps() {
   const searchTerm = document.getElementById('search').value;
 
@@ -74,28 +75,15 @@ function displayFollowUps(followUps) {
       <td>${caseData.name}</td>
       <td>${caseData.phone}</td>
       <td>${new Date(caseData.followUpDate).toLocaleDateString()}</td>
-    `;
-    table.appendChild(row);
-  });
-}
-function displayFollowUps(followUps) {
-  const tableBody = document.getElementById('followUpTable').getElementsByTagName('tbody')[0];
-  tableBody.innerHTML = '';
-
-  followUps.forEach(caseData => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${caseData.name}</td>
-      <td>${caseData.phone}</td>
-      <td>${new Date(caseData.followUpDate).toLocaleDateString()}</td>
       <td>
         <button onclick="editCase('${caseData._id}')">Edit</button>
         <button onclick="deleteCase('${caseData._id}')">Delete</button>
       </td>
     `;
-    tableBody.appendChild(row);
+    table.appendChild(row);
   });
 }
+
 function deleteCase(caseId) {
   if (confirm('Are you sure you want to delete this case?')) {
     fetch(`/cases/${caseId}`, {
@@ -107,7 +95,6 @@ function deleteCase(caseId) {
       searchFollowUps(); // Refresh table after deletion
     })
     .catch(error => console.error('Error deleting case:', error));
-  }
 }
 
 function editCase(caseId) {
@@ -139,9 +126,10 @@ function editCase(caseId) {
     })
     .catch(error => console.error('Error fetching case for edit:', error));
 }
+
 document.getElementById("submitCaseForm").addEventListener("submit", function(event) {
   event.preventDefault();
-  
+
   const formData = new FormData(this);
   const caseData = {};
   formData.forEach((value, key) => {
@@ -174,6 +162,7 @@ document.getElementById("submitCaseForm").addEventListener("submit", function(ev
   })
   .catch(error => console.error('Error:', error));
 });
+
 function getTodayFollowUps() {
   fetch('/today-followups')
     .then(response => response.json())
