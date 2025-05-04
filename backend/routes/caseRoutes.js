@@ -1,17 +1,34 @@
 const express = require('express');
 const router = express.Router();
-const caseController = require('../controllers/caseController');
+const Case = require('../models/Case');
 
-// Handle case submission
-router.post('/', caseController.createCase);
+// ✅ POST: Add a new case
+router.post('/add', async (req, res) => {
+  try {
+    const newCase = new Case(req.body);
+    await newCase.save();
+    res.status(201).json({ message: 'Case added successfully' });
+  } catch (err) {
+    console.error('Error adding case:', err);
+    res.status(500).json({ message: 'Error adding case' });
+  }
+});
 
-// Retrieve all cases (for admin view)
-router.get('/', caseController.getCases);
+// ✅ GET: Fetch follow-up cases
+router.get('/follow-ups', async (req, res) => {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // reset to start of day
 
-// Retrieve today's follow-up list
-router.get('/followups/today', caseController.getTodayFollowUps);
+    const followUps = await Case.find({
+      followUpDate: { $lte: today }
+    });
 
-// Delete a case by its ID
-router.delete('/:id', caseController.deleteCase);
+    res.json(followUps);
+  } catch (err) {
+    console.error('Error fetching follow-ups:', err);
+    res.status(500).json({ message: 'Error fetching follow-ups' });
+  }
+});
 
 module.exports = router;
