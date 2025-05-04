@@ -1,192 +1,116 @@
-document.getElementById("submitCaseForm").addEventListener("submit", function(event) {
-  event.preventDefault();
+const BASE_URL = 'https://backend-bhanu-app.onrender.com';
 
-  // Collect form data
-  const formData = new FormData(this);
+// Submit Case
+document.getElementById('caseForm')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-  // Convert form data to a plain object for JSON submission
-  const caseData = {};
-  formData.forEach((value, key) => {
-    caseData[key] = value;
-  });
+  const caseData = {
+    name: document.getElementById('name').value,
+    age: parseInt(document.getElementById('age').value),
+    phone: document.getElementById('phone').value,
+    symptoms: document.getElementById('symptoms').value,
+    date: document.getElementById('date').value,
+  };
 
-  // Send case data as JSON to the backend
-  fetch('https://backend-bhanu-app.onrender.com/submit-case'
-, {
+  const response = await fetch(`${BASE_URL}/submit-case`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json', // Ensure data is sent as JSON
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(caseData),
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.message === 'Case submitted successfully') {
-      // After submission, display case data
-      displayCaseDetails(data.case);
-    }
-  })
-  .catch(error => console.error('Error:', error));
+  });
+
+  const data = await response.json();
+  alert(data.message || 'Case submitted!');
+  document.getElementById('caseForm').reset();
 });
 
-function displayCaseDetails(caseData) {
-  // Get the case details div
-  const caseDetailsDiv = document.getElementById("case-details");
-
-  // Format dates
-  const visitDate = new Date(caseData.dateOfVisit).toLocaleDateString();
-  const followUpDate = new Date(caseData.followUpDate).toLocaleDateString();
-
-  // Populate the case details
-  caseDetailsDiv.innerHTML = `
-    <h2>Case Details</h2>
-    <ul>
-      <li><strong>Name:</strong> ${caseData.name}</li>
-      <li><strong>Age:</strong> ${caseData.age}</li>
-      <li><strong>Gender:</strong> ${caseData.gender}</li>
-      <li><strong>Marital Status:</strong> ${caseData.maritalStatus}</li>
-      <li><strong>Occupation:</strong> ${caseData.occupation}</li>
-      <li><strong>Address:</strong> ${caseData.address}</li>
-      <li><strong>Phone:</strong> ${caseData.phone}</li>
-      <li><strong>Date of Visit:</strong> ${visitDate}</li>
-      <li><strong>Chief Complaints:</strong> ${caseData.chiefComplaints}</li>
-      <li><strong>Follow-Up Date:</strong> ${followUpDate}</li>
-    </ul>
-  `;
-}
-
-function searchFollowUps() {
-  const searchTerm = document.getElementById('search').value;
-
-  fetch(`/follow-ups?search=${searchTerm}`)
-    .then(response => response.json())
-    .then(followUps => {
-      displayFollowUps(followUps);
-    })
-    .catch(error => console.error('Error fetching follow-ups:', error));
-}
-
-function displayFollowUps(followUps) {
-  const table = document.getElementById('followUpTable');
-  table.innerHTML = '';
-
-  followUps.forEach(caseData => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${caseData.name}</td>
-      <td>${caseData.phone}</td>
-      <td>${new Date(caseData.followUpDate).toLocaleDateString()}</td>
-      <td>
-        <button onclick="editCase('${caseData._id}')">Edit</button>
-        <button onclick="deleteCase('${caseData._id}')">Delete</button>
-      </td>
+// Fetch All Cases
+async function fetchCases() {
+  const response = await fetch(`${BASE_URL}/cases`);
+  const cases = await response.json();
+  const list = document.getElementById('casesList');
+  list.innerHTML = '';
+  cases.forEach((c) => {
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <strong>${c.name}</strong> (Age: ${c.age}) - ${c.symptoms} <br>
+      Date: ${new Date(c.date).toLocaleDateString()} - Phone: ${c.phone}
+      <button onclick="deleteCase('${c._id}')">Delete</button>
+      <button onclick="showFollowUpForm('${c._id}')">Add Follow-up</button>
     `;
-    table.appendChild(row);
+    list.appendChild(li);
   });
 }
 
-function deleteCase(caseId) {
-  if (confirm('Are you sure you want to delete this case?')) {
-    fetch(`/cases/${caseId}`, {
-      method: 'DELETE',
-    })
-    .then(response => response.json())
-    .then(data => {
-      alert(data.message);
-      searchFollowUps(); // Refresh table after deletion
-    })
-    .catch(error => console.error('Error deleting case:', error));
+// Delete Case
+async function deleteCase(caseId) {
+  const confirmDelete = confirm('Are you sure you want to delete this case?');
+  if (!confirmDelete) return;
+
+  await fetch(`${BASE_URL}/cases/${caseId}`, { method: 'DELETE' });
+  fetchCases();
 }
 
-function editCase(caseId) {
-  // Fetch case details and prefill the form
-  fetch(`/cases/${caseId}`)
-    .then(response => response.json())
-    .then(caseData => {
-      document.getElementById('name').value = caseData.name;
-      document.getElementById('age').value = caseData.age;
-      document.getElementById('gender').value = caseData.gender;
-      document.getElementById('maritalStatus').value = caseData.maritalStatus;
-      document.getElementById('occupation').value = caseData.occupation;
-      document.getElementById('address').value = caseData.address;
-      document.getElementById('phone').value = caseData.phone;
-      document.getElementById('dateOfVisit').value = new Date(caseData.dateOfVisit).toISOString().split('T')[0];
-      document.getElementById('chiefComplaints').value = caseData.chiefComplaints;
-      document.getElementById('followUpDate').value = new Date(caseData.followUpDate).toISOString().split('T')[0];
-
-      // Add hidden input for editing existing case
-      let hiddenIdField = document.getElementById('caseId');
-      if (!hiddenIdField) {
-        hiddenIdField = document.createElement('input');
-        hiddenIdField.type = 'hidden';
-        hiddenIdField.id = 'caseId';
-        hiddenIdField.name = 'caseId';
-        document.getElementById('submitCaseForm').appendChild(hiddenIdField);
-      }
-      hiddenIdField.value = caseId;
-    })
-    .catch(error => console.error('Error fetching case for edit:', error));
+// Show Follow-Up Form
+function showFollowUpForm(caseId) {
+  const followUpSection = document.getElementById('followUpSection');
+  followUpSection.style.display = 'block';
+  followUpSection.dataset.caseId = caseId;
 }
 
-document.getElementById("submitCaseForm").addEventListener("submit", function(event) {
-  event.preventDefault();
+// Submit Follow-Up
+document.getElementById('followUpForm')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-  const formData = new FormData(this);
-  const caseData = {};
-  formData.forEach((value, key) => {
-    caseData[key] = value;
+  const caseId = document.getElementById('followUpSection').dataset.caseId;
+  const followUpData = {
+    date: document.getElementById('followUpDate').value,
+    notes: document.getElementById('followUpNotes').value,
+  };
+
+  await fetch(`${BASE_URL}/cases/${caseId}/follow-ups`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(followUpData),
   });
 
-  let method = 'POST';
-  let url = '/submit-case';
-
-  if (caseData.caseId) {
-    method = 'PUT';
-    url = `/cases/${caseData.caseId}`;
-  }
-
-  fetch(url, {
-    method: method,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(caseData),
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.message === 'Case submitted successfully' || data.message === 'Case updated successfully') {
-      displayCaseDetails(data.case);
-      // Clear hidden caseId field after update
-      const hiddenIdField = document.getElementById('caseId');
-      if (hiddenIdField) hiddenIdField.remove();
-    }
-  })
-  .catch(error => console.error('Error:', error));
+  alert('Follow-up added!');
+  document.getElementById('followUpForm').reset();
+  document.getElementById('followUpSection').style.display = 'none';
 });
 
-function getTodayFollowUps() {
-  fetch('/today-followups')
-    .then(response => response.json())
-    .then(todayCases => {
-      const table = document.getElementById('todayFollowUpTable');
-      const tbody = table.getElementsByTagName('tbody')[0];
-      tbody.innerHTML = '';
-
-      if (todayCases.length > 0) {
-        todayCases.forEach(caseData => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${caseData.name}</td>
-            <td>${caseData.phone}</td>
-            <td>${new Date(caseData.followUpDate).toLocaleDateString()}</td>
-          `;
-          tbody.appendChild(row);
-        });
-        table.style.display = 'table'; // Show table
-      } else {
-        alert('No follow-ups for today.');
-        table.style.display = 'none'; // Hide table
-      }
-    })
-    .catch(error => console.error('Error fetching today\'s follow-ups:', error));
+// Fetch Follow-Ups
+async function fetchFollowUps() {
+  const response = await fetch(`${BASE_URL}/follow-ups`);
+  const followUps = await response.json();
+  const list = document.getElementById('followUpList');
+  list.innerHTML = '';
+  followUps.forEach((f) => {
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <strong>${f.case.name}</strong> - ${f.notes} <br>
+      Date: ${new Date(f.date).toLocaleDateString()}
+    `;
+    list.appendChild(li);
+  });
 }
+
+// Fetch Today's Follow-Ups
+async function fetchTodayFollowUps() {
+  const response = await fetch(`${BASE_URL}/today-followups`);
+  const todayFollowUps = await response.json();
+  const list = document.getElementById('todayFollowUpList');
+  list.innerHTML = '';
+  todayFollowUps.forEach((f) => {
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <strong>${f.case.name}</strong> - Phone: ${f.case.phone} <br>
+      Notes: ${f.notes} | Date: ${new Date(f.date).toLocaleDateString()}
+    `;
+    list.appendChild(li);
+  });
+}
+
+// Page-based initialization
+if (window.location.pathname.endsWith('cases.html')) fetchCases();
+if (window.location.pathname.endsWith('followups.html')) fetchFollowUps();
+if (window.location.pathname.endsWith('today.html')) fetchTodayFollowUps();
