@@ -1,42 +1,88 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 
-const FollowUps = () => {
-  const [followUps, setFollowUps] = useState([]);
-  const [loading, setLoading] = useState(true);
+const FollowUpForm = ({ caseId, onFollowUpAdded }) => {
+  const [followUpDate, setFollowUpDate] = useState('');
+  const [complaints, setComplaints] = useState('');
+  const [prescription, setPrescription] = useState('');
+  const [remarks, setRemarks] = useState('');
 
-  useEffect(() => {
-    // Fetch the follow-up data when the component mounts
-    const fetchFollowUps = async () => {
-      try {
-        const response = await axios.get('https://your-backend-url/follow-ups'); // Replace with your backend URL
-        setFollowUps(response.data);  // Assuming backend returns follow-up data as an array
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching follow-ups:', error);
-        setLoading(false);
-      }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    const followUpData = {
+      caseId,
+      date: followUpDate,
+      complaints,
+      prescription,
+      remarks,
     };
 
-    fetchFollowUps();
-  }, []);
-
-  if (loading) {
-    return <div>Loading follow-up data...</div>;
-  }
+    // Call the backend API to save the follow-up data
+    fetch('/api/add-follow-up', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(followUpData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          onFollowUpAdded(data.followUp); // To update the parent component with the new follow-up
+          alert('Follow-up added successfully!');
+        } else {
+          alert('Failed to add follow-up!');
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        alert('Error adding follow-up!');
+      });
+  };
 
   return (
-    <div>
-      <h2>Follow-Up Cases</h2>
-      <ul>
-        {followUps.map((followUp, index) => (
-          <li key={index}>
-            Patient: {followUp.patientName}, Next Follow-Up Date: {followUp.nextFollowUpDate}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <h3>Add Follow-Up</h3>
+      <label>
+        Date:
+        <input
+          type="date"
+          value={followUpDate}
+          onChange={(e) => setFollowUpDate(e.target.value)}
+          required
+        />
+      </label>
+      <br />
+      <label>
+        Complaints:
+        <textarea
+          value={complaints}
+          onChange={(e) => setComplaints(e.target.value)}
+          required
+        />
+      </label>
+      <br />
+      <label>
+        Prescription:
+        <textarea
+          value={prescription}
+          onChange={(e) => setPrescription(e.target.value)}
+          required
+        />
+      </label>
+      <br />
+      <label>
+        Remarks:
+        <textarea
+          value={remarks}
+          onChange={(e) => setRemarks(e.target.value)}
+          required
+        />
+      </label>
+      <br />
+      <button type="submit">Submit Follow-Up</button>
+    </form>
   );
 };
 
-export default FollowUps;
+export default FollowUpForm;
