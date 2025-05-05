@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 const SubmitCaseForm = () => {
-  // Form state variables
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
   const [gender, setGender] = useState('');
@@ -13,11 +12,10 @@ const SubmitCaseForm = () => {
   const [chiefComplaints, setChiefComplaints] = useState('');
   const [historyOfPresentIllness, setHistoryOfPresentIllness] = useState('');
   const [prescription, setPrescription] = useState('');
-  
-  // Handling form submit
+
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent page reload on form submit
-    
+    e.preventDefault();
+
     const caseData = {
       name,
       age,
@@ -29,7 +27,7 @@ const SubmitCaseForm = () => {
       dateOfVisit,
       chiefComplaints,
       historyOfPresentIllness,
-      prescription
+      prescription,
     };
 
     try {
@@ -38,19 +36,20 @@ const SubmitCaseForm = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(caseData),  // Send the case data as JSON
+        body: JSON.stringify(caseData),
       });
 
       const data = await response.json();
+      console.log('Response:', data);
 
       if (response.ok) {
-        alert('Case submitted successfully!');
+        alert('✅ Case submitted successfully!');
       } else {
-        alert('Error: ' + data.message);
+        alert(`❌ Error: ${data?.message || 'Unknown error occurred'}`);
       }
     } catch (error) {
-      console.error('Error submitting case:', error);
-      alert('Error submitting case!');
+      console.error('Submit error:', error);
+      alert('❌ Network error. Try again later.');
     }
   };
 
@@ -59,37 +58,37 @@ const SubmitCaseForm = () => {
       <h3>Submit Patient Case</h3>
       <label>Name:</label>
       <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
-      
+
       <label>Age:</label>
       <input type="number" value={age} onChange={(e) => setAge(e.target.value)} required />
-      
+
       <label>Gender:</label>
       <input type="text" value={gender} onChange={(e) => setGender(e.target.value)} required />
-      
+
       <label>Marital Status:</label>
       <input type="text" value={maritalStatus} onChange={(e) => setMaritalStatus(e.target.value)} required />
-      
+
       <label>Occupation:</label>
       <input type="text" value={occupation} onChange={(e) => setOccupation(e.target.value)} required />
-      
+
       <label>Address:</label>
       <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} required />
-      
+
       <label>Phone:</label>
       <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required />
-      
+
       <label>Date of Visit:</label>
       <input type="date" value={dateOfVisit} onChange={(e) => setDateOfVisit(e.target.value)} required />
-      
+
       <label>Chief Complaints:</label>
       <textarea value={chiefComplaints} onChange={(e) => setChiefComplaints(e.target.value)} required />
-      
+
       <label>History of Present Illness:</label>
       <textarea value={historyOfPresentIllness} onChange={(e) => setHistoryOfPresentIllness(e.target.value)} required />
-      
+
       <label>Prescription:</label>
       <textarea value={prescription} onChange={(e) => setPrescription(e.target.value)} required />
-      
+
       <button type="submit">Submit Case</button>
     </form>
   );
