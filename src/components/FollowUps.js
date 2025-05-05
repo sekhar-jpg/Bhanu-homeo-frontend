@@ -8,7 +8,7 @@ const FollowUpForm = ({ caseId, onFollowUpAdded }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     const followUpData = {
       caseId,
       date: followUpDate,
@@ -17,8 +17,8 @@ const FollowUpForm = ({ caseId, onFollowUpAdded }) => {
       remarks,
     };
 
-    // Call the backend API to save the follow-up data
-    fetch('/api/add-follow-up', {
+    // ✅ Call production backend
+    fetch('https://backend-bhanu-app.onrender.com/api/add-follow-up', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -28,15 +28,15 @@ const FollowUpForm = ({ caseId, onFollowUpAdded }) => {
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
-          onFollowUpAdded(data.followUp); // To update the parent component with the new follow-up
-          alert('Follow-up added successfully!');
+          onFollowUpAdded(data.followUp);
+          alert('✅ Follow-up added successfully!');
         } else {
-          alert('Failed to add follow-up!');
+          alert('❌ Failed to add follow-up!');
         }
       })
       .catch((error) => {
         console.error('Error:', error);
-        alert('Error adding follow-up!');
+        alert('❌ Error adding follow-up!');
       });
   };
 
