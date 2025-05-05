@@ -1,88 +1,59 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import FollowUpForm from './FollowUpForm';
+import FollowUpList from './FollowUpList';
 
-const FollowUpForm = ({ caseId, onFollowUpAdded }) => {
-  const [followUpDate, setFollowUpDate] = useState('');
-  const [complaints, setComplaints] = useState('');
-  const [prescription, setPrescription] = useState('');
-  const [remarks, setRemarks] = useState('');
+const FollowUps = () => {
+  const [cases, setCases] = useState([]);
+  const [selectedCase, setSelectedCase] = useState(null);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const followUpData = {
-      caseId,
-      date: followUpDate,
-      complaints,
-      prescription,
-      remarks,
-    };
-
-    // ✅ Call production backend
-    fetch('https://backend-bhanu-app.onrender.com/api/add-follow-up', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(followUpData),
-    })
-      .then((response) => response.json())
+  useEffect(() => {
+    fetch('https://backend-bhanu-app.onrender.com/api/cases')
+      .then((res) => res.json())
       .then((data) => {
         if (data.success) {
-          onFollowUpAdded(data.followUp);
-          alert('✅ Follow-up added successfully!');
+          setCases(data.cases);
         } else {
-          alert('❌ Failed to add follow-up!');
+          alert('Failed to fetch cases');
         }
       })
-      .catch((error) => {
-        console.error('Error:', error);
-        alert('❌ Error adding follow-up!');
+      .catch((err) => {
+        console.error('Error fetching cases:', err);
+        alert('Error fetching cases');
       });
-  };
+  }, []);
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h3>Add Follow-Up</h3>
-      <label>
-        Date:
-        <input
-          type="date"
-          value={followUpDate}
-          onChange={(e) => setFollowUpDate(e.target.value)}
-          required
-        />
-      </label>
-      <br />
-      <label>
-        Complaints:
-        <textarea
-          value={complaints}
-          onChange={(e) => setComplaints(e.target.value)}
-          required
-        />
-      </label>
-      <br />
-      <label>
-        Prescription:
-        <textarea
-          value={prescription}
-          onChange={(e) => setPrescription(e.target.value)}
-          required
-        />
-      </label>
-      <br />
-      <label>
-        Remarks:
-        <textarea
-          value={remarks}
-          onChange={(e) => setRemarks(e.target.value)}
-          required
-        />
-      </label>
-      <br />
-      <button type="submit">Submit Follow-Up</button>
-    </form>
+    <div>
+      <h2>All Cases</h2>
+      <ul>
+        {cases.map((c) => (
+          <li key={c._id}>
+            <strong>{c.name}</strong> ({c.age}/{c.gender}) - {c.phone}
+            <button onClick={() => setSelectedCase(c)}>Add/View Follow-Up</button>
+          </li>
+        ))}
+      </ul>
+
+      {selectedCase && (
+        <div style={{ marginTop: '30px' }}>
+          <h3>Selected Case: {selectedCase.name}</h3>
+          <p><strong>Age:</strong> {selectedCase.age}</p>
+          <p><strong>Gender:</strong> {selectedCase.gender}</p>
+          <p><strong>Phone:</strong> {selectedCase.phone}</p>
+          <p><strong>Complaints:</strong> {selectedCase.complaints}</p>
+          <p><strong>Prescription:</strong> {selectedCase.prescription}</p>
+
+          <hr />
+
+          <FollowUpForm caseId={selectedCase._id} onFollowUpAdded={() => {}} />
+
+          <hr />
+
+          <FollowUpList caseId={selectedCase._id} />
+        </div>
+      )}
+    </div>
   );
 };
 
-export default FollowUpForm;
+export default FollowUps;
