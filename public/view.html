@@ -56,7 +56,7 @@
     const apiUrl = 'https://backend-bhanu-app.onrender.com/api/cases';
 
     function formatDate(dateStr) {
-      if (!dateStr) return '';
+      if (!dateStr) return '—';
       const date = new Date(dateStr);
       return date.toISOString().split('T')[0];
     }
@@ -75,11 +75,11 @@
         const row = document.createElement('tr');
         row.innerHTML = `
           <td>${formatDate(c.visitDate)}</td>
-          <td>${c.patientName || ''}</td>
-          <td>${c.phoneNumber || ''}</td>
+          <td>${c.patientName || '—'}</td>
+          <td>${c.phoneNumber || '—'}</td>
           <td>${formatDate(c.followUpDate)}</td>
-          <td>${c.symptoms || ''}</td>
-          <td>${c.mentalSymptoms || ''}</td>
+          <td>${c.symptoms || '—'}</td>
+          <td>${c.mentalSymptoms || '—'}</td>
           <td>
             <button class="edit-btn" data-id="${c._id}">✏️</button>
             <button class="delete-btn" data-id="${c._id}">🗑️</button>
