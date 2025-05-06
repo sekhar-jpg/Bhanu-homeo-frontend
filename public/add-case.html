@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Case Submission</title>
   <style>
     body {
@@ -144,6 +144,17 @@
     document.getElementById('caseForm').addEventListener('submit', async function(event) {
       event.preventDefault();
 
+      const prescriptionData = Array.from(document.querySelectorAll('#prescriptionTable tr')).map(row => {
+        const inputs = row.querySelectorAll('input');
+        return {
+          date: inputs[0]?.value || '',
+          remedy: inputs[1]?.value || '',
+          potency: inputs[2]?.value || '',
+          dose: inputs[3]?.value || '',
+          instructions: inputs[4]?.value || ''
+        };
+      });
+
       const formData = {
         name: document.getElementById('name').value,
         phone: document.getElementById('phone').value,
@@ -157,11 +168,11 @@
         personalHistory: document.getElementById('personalHistory').value,
         generalRemarks: document.getElementById('generalRemarks').value,
         observations: document.getElementById('observations').value,
-        prescription: document.querySelectorAll('#prescriptionTable input').values().map(input => input.value),
+        prescription: prescriptionData
       };
 
       try {
-        const response = await fetch('/submit-case', {
+        const response = await fetch('/api/cases', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
