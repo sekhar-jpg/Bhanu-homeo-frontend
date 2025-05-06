@@ -1,145 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>View Cases</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Submitted Cases</title>
   <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    input[type="text"] {
+      margin-bottom: 10px;
+      padding: 5px;
+      width: 300px;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
-    }
-    table, th, td {
-      border: 1px solid black;
+      margin-top: 10px;
     }
     th, td {
       padding: 8px;
+      border: 1px solid #ddd;
       text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    button {
+      margin-right: 5px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
   <h2>Submitted Cases</h2>
-  
-  <input type="text" id="searchBar" placeholder="Search cases..." onkeyup="searchCases()">
-  
-  <table id="casesTable">
+  <input type="text" id="searchInput" placeholder="Search by name or phone..." />
+
+  <table>
     <thead>
       <tr>
+        <th>Visit Date</th>
         <th>Name</th>
         <th>Phone</th>
-        <th>Visit Date</th>
         <th>Follow-Up Date</th>
         <th>Chief Complaints</th>
         <th>Mental Symptoms</th>
-        <th>Actions</th>
+        <th>Action</th>
       </tr>
     </thead>
-    <tbody>
-      <!-- Case rows will be populated here -->
-    </tbody>
+    <tbody id="caseTableBody"></tbody>
   </table>
 
-  <!-- Edit Case Form (hidden by default) -->
-  <div id="editForm" style="display: none;">
-    <h3>Edit Case</h3>
-    <form id="caseForm">
-      <input type="text" id="patientName" placeholder="Patient Name" required>
-      <input type="text" id="phoneNumber" placeholder="Phone Number" required>
-      <textarea id="symptoms" placeholder="Symptoms" required></textarea>
-      <textarea id="remedyGiven" placeholder="Remedy Given"></textarea>
-      <input type="date" id="followUpDate" placeholder="Follow Up Date">
-
-      <button type="submit">Submit</button>
-    </form>
-  </div>
-
   <script>
-    // Fetch cases from the backend and populate the table
-    function fetchCases() {
-      fetch('https://backend-bhanu-app.onrender.com/api/cases')
-        .then(response => response.json())
-        .then(data => {
-          const casesTable = document.getElementById('casesTable').getElementsByTagName('tbody')[0];
-          casesTable.innerHTML = ''; // Clear the table before adding new rows
-          data.forEach((caseItem) => {
-            const row = casesTable.insertRow();
-            row.innerHTML = `
-              <td>${caseItem.patientName}</td>
-              <td>${caseItem.phoneNumber}</td>
-              <td>${new Date(caseItem.visitDate).toLocaleDateString()}</td>
-              <td>${caseItem.followUpDate ? new Date(caseItem.followUpDate).toLocaleDateString() : ''}</td>
-              <td>${caseItem.symptoms}</td>
-              <td>${caseItem.mentalSymptoms || ''}</td>
-              <td><button onclick="editCase('${caseItem._id}')">Edit</button></td>
-            `;
-          });
-        })
-        .catch(error => console.error('Error fetching cases:', error));
+    const apiUrl = 'https://backend-bhanu-app.onrender.com/api/cases';
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      const date = new Date(dateStr);
+      return date.toISOString().split('T')[0];
     }
 
-    // Function to fetch case data by ID and pre-fill the form for editing
-    function editCase(caseId) {
-      fetch(`https://backend-bhanu-app.onrender.com/api/cases/${caseId}`)
-        .then(response => response.json())
-        .then(data => {
-          if (data) {
-            // Populate the form fields with the existing case data
-            document.getElementById('patientName').value = data.patientName;
-            document.getElementById('phoneNumber').value = data.phoneNumber;
-            document.getElementById('symptoms').value = data.symptoms;
-            document.getElementById('remedyGiven').value = data.remedyGiven;
-            document.getElementById('followUpDate').value = data.followUpDate;
+    async function fetchCases() {
+      const res = await fetch(apiUrl);
+      const data = await res.json();
+      displayCases(data);
+    }
 
-            // Show the edit form
-            document.getElementById('editForm').style.display = 'block';
+    function displayCases(cases) {
+      const tbody = document.getElementById('caseTableBody');
+      tbody.innerHTML = '';
 
-            // Set the form action to update
-            document.getElementById('caseForm').setAttribute('data-action', 'update');
-            document.getElementById('caseForm').setAttribute('data-case-id', caseId);
+      cases.forEach(c => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${formatDate(c.visitDate)}</td>
+          <td>${c.patientName || ''}</td>
+          <td>${c.phoneNumber || ''}</td>
+          <td>${formatDate(c.followUpDate)}</td>
+          <td>${c.symptoms || ''}</td>
+          <td>${c.mentalSymptoms || ''}</td>
+          <td>
+            <button class="edit-btn" data-id="${c._id}">✏️</button>
+            <button class="delete-btn" data-id="${c._id}">🗑️</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      // Attach event listeners
+      document.querySelectorAll('.delete-btn').forEach(btn =>
+        btn.addEventListener('click', async (e) => {
+          const id = e.target.dataset.id;
+          if (confirm('Are you sure you want to delete this case?')) {
+            await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
+            fetchCases();
           }
         })
-        .catch(error => console.error('Error fetching case data:', error));
+      );
+
+      document.querySelectorAll('.edit-btn').forEach(btn =>
+        btn.addEventListener('click', async (e) => {
+          const id = e.target.dataset.id;
+          const name = prompt("Enter updated name:");
+          const phone = prompt("Enter updated phone:");
+          const symptoms = prompt("Enter updated symptoms:");
+          const mental = prompt("Enter updated mental symptoms:");
+          const followUp = prompt("Enter updated follow-up date (YYYY-MM-DD):");
+
+          const updatedData = {
+            patientName: name,
+            phoneNumber: phone,
+            symptoms,
+            mentalSymptoms: mental,
+            followUpDate: followUp
+          };
+
+          await fetch(`${apiUrl}/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedData)
+          });
+          fetchCases();
+        })
+      );
     }
 
-    // Handle form submission for creating or updating a case
-    document.getElementById('caseForm').addEventListener('submit', function (event) {
-      event.preventDefault();
-
-      const action = this.getAttribute('data-action');
-      const caseId = this.getAttribute('data-case-id');
-
-      const formData = {
-        patientName: document.getElementById('patientName').value,
-        phoneNumber: document.getElementById('phoneNumber').value,
-        symptoms: document.getElementById('symptoms').value,
-        remedyGiven: document.getElementById('remedyGiven').value,
-        followUpDate: document.getElementById('followUpDate').value,
-      };
-
-      const requestOptions = {
-        method: action === 'update' ? 'PUT' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      };
-
-      const apiUrl = action === 'update'
-        ? `https://backend-bhanu-app.onrender.com/api/cases/${caseId}`
-        : 'https://backend-bhanu-app.onrender.com/api/cases';
-
-      fetch(apiUrl, requestOptions)
-        .then(response => response.json())
-        .then(data => {
-          alert(action === 'update' ? 'Case updated successfully!' : 'Case added successfully!');
-          document.getElementById('caseForm').reset();
-          document.getElementById('editForm').style.display = 'none'; // Hide the form after submission
-          fetchCases(); // Re-fetch cases to update the list
-        })
-        .catch(error => console.error('Error submitting form:', error));
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', function () {
+      const term = this.value.toLowerCase();
+      const rows = document.querySelectorAll('#caseTableBody tr');
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(term) ? '' : 'none';
+      });
     });
 
-    // Fetch and display the cases when the page loads
-    window.onload = fetchCases;
+    // Initial fetch
+    fetchCases();
   </script>
 </body>
 </html>
