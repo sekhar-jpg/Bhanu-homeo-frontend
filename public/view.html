@@ -11,10 +11,17 @@
     h2 {
       color: #2e7d32;
     }
+    input[type="text"] {
+      padding: 8px;
+      width: 300px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
     table {
       border-collapse: collapse;
       width: 100%;
-      margin-top: 20px;
+      margin-top: 10px;
     }
     th, td {
       text-align: left;
@@ -37,10 +44,20 @@
       text-decoration: none;
       border-radius: 4px;
     }
+    .delete-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: red;
+    }
   </style>
 </head>
 <body>
   <h2>Submitted Cases</h2>
+
+  <input type="text" id="searchInput" placeholder="Search by name or phone..." />
+
   <table id="casesTable">
     <thead>
       <tr>
@@ -50,6 +67,7 @@
         <th>Follow-Up Date</th>
         <th>Chief Complaints</th>
         <th>Mental Symptoms</th>
+        <th>Action</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -58,30 +76,68 @@
   <a href="/submit.html" class="btn">➕ Add New Case</a>
 
   <script>
+    let allCases = [];
+
     function formatDate(dateStr) {
       if (!dateStr) return '';
       const date = new Date(dateStr);
       return date.toLocaleDateString('en-GB'); // dd-mm-yyyy
     }
 
+    function renderTable(data) {
+      const table = document.querySelector("#casesTable tbody");
+      table.innerHTML = '';
+
+      data.forEach(entry => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${entry.name || ''}</td>
+          <td>${entry.phone || ''}</td>
+          <td>${formatDate(entry.visitDate)}</td>
+          <td>${formatDate(entry.followUpDate)}</td>
+          <td>${entry.chiefComplaint || ''}</td>
+          <td>${entry.mentalSymptoms || ''}</td>
+          <td>
+            <button class="delete-btn" onclick="deleteCase('${entry._id}')">🗑️</button>
+          </td>
+        `;
+        table.appendChild(row);
+      });
+    }
+
+    function deleteCase(id) {
+      if (confirm("Are you sure you want to delete this case?")) {
+        fetch(`https://backend-bhanu-app.onrender.com/api/cases/${id}`, {
+          method: 'DELETE'
+        })
+        .then(res => res.json())
+        .then(() => {
+          allCases = allCases.filter(c => c._id !== id);
+          renderTable(allCases);
+        })
+        .catch(err => {
+          alert("Error deleting case.");
+          console.error(err);
+        });
+      }
+    }
+
+    function searchCases() {
+      const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+      const filtered = allCases.filter(c =>
+        (c.name && c.name.toLowerCase().includes(searchTerm)) ||
+        (c.phone && c.phone.includes(searchTerm))
+      );
+      renderTable(filtered);
+    }
+
+    document.getElementById("searchInput").addEventListener("input", searchCases);
+
     fetch('https://backend-bhanu-app.onrender.com/api/cases')
       .then(res => res.json())
       .then(data => {
-        const table = document.querySelector("#casesTable tbody");
-        table.innerHTML = '';
-
-        data.forEach(entry => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${entry.name || ''}</td>
-            <td>${entry.phone || ''}</td>
-            <td>${formatDate(entry.visitDate)}</td>
-            <td>${formatDate(entry.followUpDate)}</td>
-            <td>${entry.chiefComplaint || ''}</td>
-            <td>${entry.mentalSymptoms || ''}</td>
-          `;
-          table.appendChild(row);
-        });
+        allCases = data;
+        renderTable(data);
       })
       .catch(err => {
         alert("Error fetching cases.");
