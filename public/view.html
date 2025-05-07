@@ -51,108 +51,103 @@
     </thead>
     <tbody id="caseTableBody"></tbody>
   </table>
-<script>
-  const apiUrl = 'https://backend-bhanu-app.onrender.com/api/cases';
 
-  function formatDate(dateStr) {
-    if (!dateStr) return '—';
-    const d = new Date(dateStr);
-    return d.toISOString().split('T')[0];
-  }
+  <script>
+    const apiUrl = 'https://backend-bhanu-app.onrender.com/api/cases';
 
-  async function fetchCases() {
-    const res = await fetch(apiUrl);
-    const data = await res.json();
-    displayCases(data);
-  }
+    function formatDate(dateStr) {
+      if (!dateStr) return '—';
+      const d = new Date(dateStr);
+      return d.toISOString().split('T')[0];
+    }
 
-  async function fetchTodayFollowups() {
-    const res = await fetch(`${apiUrl}/followups/today`);
-    const data = await res.json();
-    displayCases(data);
-  }
+    async function fetchCases() {
+      const res = await fetch(apiUrl);
+      const data = await res.json();
+      displayCases(data);
+    }
 
-  function displayCases(cases) {
-    const tbody = document.getElementById('caseTableBody');
-    tbody.innerHTML = '';
+    async function fetchTodayFollowups() {
+      const res = await fetch(`${apiUrl}/followups/today`);
+      const data = await res.json();
+      displayCases(data);
+    }
 
-    cases.forEach(c => {
-      const row = document.createElement('tr');
-      const followupsHtml = (c.followUps || [])
-        .map(f => `<div class="followup-list">📅 ${formatDate(f.date)} — ${f.notes || ''}</div>`)
-        .join('') || '—';
+    function displayCases(cases) {
+      const tbody = document.getElementById('caseTableBody');
+      tbody.innerHTML = '';
 
-      row.innerHTML = `
-        <td>${c.patientName || '—'}</td>
-        <td>${c.phoneNumber || '—'}</td>
-        <td>${formatDate(c.visitDate)}</td>
-        <td>${c.symptoms || '—'}</td>
-        <td>${c.mentalSymptoms || '—'}</td>
-        <td>${followupsHtml}</td>
-        <td>
-          <button onclick="addFollowUp('${c._id}')">➕ Follow-up</button>
-          <button onclick="editCase('${c._id}', '${c.patientName}', '${c.phoneNumber}', \`${c.symptoms || ''}\`, \`${c.mentalSymptoms || ''}\`)">✏️ Edit</button>
-          <button onclick="deleteCase('${c._id}')">🗑️ Delete</button>
-        </td>
-      `;
-      tbody.appendChild(row);
-    });
-  }
+      cases.forEach(c => {
+        const row = document.createElement('tr');
+        const followupsHtml = (c.followUps || [])
+          .map(f => `<div class="followup-list">📅 ${formatDate(f.date)} — ${f.notes || ''}</div>`)
+          .join('') || '—';
 
-  async function addFollowUp(caseId) {
-    const date = prompt("Enter follow-up date (YYYY-MM-DD):");
-    const notes = prompt("Enter notes:");
-    if (!date) return alert("Date is required.");
-    await fetch(`${apiUrl}/${caseId}/followups`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ date, notes })
-    });
-    fetchCases();
-  }
+        row.innerHTML = `
+          <td>${c.patientName || '—'}</td>
+          <td>${c.phoneNumber || '—'}</td>
+          <td>${formatDate(c.visitDate)}</td>
+          <td>${c.symptoms || '—'}</td>
+          <td>${c.mentalSymptoms || '—'}</td>
+          <td>${followupsHtml}</td>
+          <td>
+            <button onclick="addFollowUp('${c._id}')">➕ Follow-up</button>
+            <button onclick="editCase('${c._id}')">✏️ Edit</button>
+            <button onclick="deleteCase('${c._id}')">🗑️</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
 
-  async function deleteCase(id) {
-    if (confirm("Are you sure you want to delete this case?")) {
-      await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
+    async function addFollowUp(caseId) {
+      const date = prompt("Enter follow-up date (YYYY-MM-DD):");
+      const notes = prompt("Enter notes:");
+      if (!date) return alert("Date is required.");
+      await fetch(`${apiUrl}/${caseId}/followups`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ date, notes })
+      });
       fetchCases();
     }
-  }
 
-  async function editCase(id, name, phone, symptoms, mentalSymptoms) {
-    const updatedName = prompt("Update Patient Name:", name);
-    const updatedPhone = prompt("Update Phone Number:", phone);
-    const updatedSymptoms = prompt("Update Symptoms:", symptoms);
-    const updatedMental = prompt("Update Mental Symptoms:", mentalSymptoms);
+    async function editCase(caseId) {
+      const res = await fetch(`${apiUrl}/${caseId}`);
+      const data = await res.json();
 
-    if (!updatedName || !updatedPhone || !updatedSymptoms) {
-      alert("Name, phone, and symptoms are required.");
-      return;
+      const patientName = prompt("Edit patient name:", data.patientName);
+      const phoneNumber = prompt("Edit phone number:", data.phoneNumber);
+      const symptoms = prompt("Edit symptoms:", data.symptoms);
+      const mentalSymptoms = prompt("Edit mental symptoms:", data.mentalSymptoms);
+      const remedyGiven = prompt("Edit remedy given:", data.remedyGiven);
+
+      await fetch(`${apiUrl}/${caseId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ patientName, phoneNumber, symptoms, mentalSymptoms, remedyGiven })
+      });
+
+      fetchCases();
     }
 
-    await fetch(`${apiUrl}/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        patientName: updatedName,
-        phoneNumber: updatedPhone,
-        symptoms: updatedSymptoms,
-        mentalSymptoms: updatedMental
-      })
+    async function deleteCase(id) {
+      if (confirm("Are you sure you want to delete this case?")) {
+        await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
+        fetchCases();
+      }
+    }
+
+    document.getElementById('searchInput').addEventListener('input', function () {
+      const term = this.value.toLowerCase();
+      const rows = document.querySelectorAll('#caseTableBody tr');
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(term) ? '' : 'none';
+      });
     });
 
     fetchCases();
-  }
-
-  document.getElementById('searchInput').addEventListener('input', function () {
-    const term = this.value.toLowerCase();
-    const rows = document.querySelectorAll('#caseTableBody tr');
-    rows.forEach(row => {
-      const text = row.textContent.toLowerCase();
-      row.style.display = text.includes(term) ? '' : 'none';
-    });
-  });
-
-  fetchCases();
-</script>
-
- 
+  </script>
+</body>
+</html>
