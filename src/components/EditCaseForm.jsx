@@ -5,6 +5,7 @@ import axios from 'axios';
 function EditCaseForm() {
   const { caseId } = useParams();
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: '',
     age: '',
@@ -17,23 +18,24 @@ function EditCaseForm() {
   });
 
   useEffect(() => {
-    axios.get(https://backend-bhanu-app.onrender.com/cases/${caseId}`)
-      .then((res) => {
-        setFormData(res.data);
-      })
-      .catch((err) => {
-        console.error('Error fetching case details:', err);
-      });
+    axios
+      .get(`https://bhanuhomeo-backend.onrender.com/cases/${caseId}`)
+      .then((res) => setFormData(res.data))
+      .catch((err) => console.error('Failed to fetch case data:', err));
   }, [caseId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put(https://backend-bhanu-app.onrender.com/cases/${caseId}`, formData)
+    axios
+      .put(`https://bhanuhomeo-backend.onrender.com/cases/${caseId}`, formData)
       .then(() => {
         alert('Case updated successfully');
         navigate('/followups');
@@ -48,7 +50,7 @@ function EditCaseForm() {
       <h2>Edit Case</h2>
       <form onSubmit={handleSubmit}>
         {Object.entries(formData).map(([key, value]) => (
-          <div key={key} className="mb-3">
+          <div className="mb-3" key={key}>
             <label className="form-label">{key.toUpperCase()}</label>
             <input
               type="text"
@@ -59,7 +61,9 @@ function EditCaseForm() {
             />
           </div>
         ))}
-        <button type="submit" className="btn btn-primary">Update Case</button>
+        <button type="submit" className="btn btn-primary">
+          Update Case
+        </button>
       </form>
     </div>
   );
