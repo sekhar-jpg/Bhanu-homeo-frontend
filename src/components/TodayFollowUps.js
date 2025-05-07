@@ -7,7 +7,7 @@ const TodayFollowUps = () => {
     // Fetch today's follow-ups from the backend
     fetch('https://backend-bhanu-app.onrender.com/followups/today')
       .then((response) => response.json())
-      .then((data) => setFollowUps(data.followUps))
+      .then((data) => setFollowUps(data))
       .catch((error) => console.error('Error fetching follow-ups:', error));
   }, []);
 
