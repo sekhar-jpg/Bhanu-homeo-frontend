@@ -1,21 +1,25 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import AddCase from "./components/AddCase";
-import FollowUpForm from "./components/FollowUpForm";
-import FollowUpList from "./components/FollowUpList";
-import TodayFollowUps from "./components/TodayFollowUps";
-import Navbar from "./components/Navbar";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import AddCase from './components/AddCase';
+import FollowUps from './components/FollowUps';
+import FollowUpForm from './components/FollowUpForm';
+import TodayFollowUps from './components/TodayFollowUps';
+import EditCaseForm from './components/EditCaseForm';
 
 function App() {
   return (
     <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/add-case" element={<AddCase />} />
-        <Route path="/follow-up" element={<FollowUpForm />} />
-        <Route path="/all-followups" element={<FollowUpList />} />
-        <Route path="/today" element={<TodayFollowUps />} />
-      </Routes>
+      <div>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<AddCase />} />
+          <Route path="/followups" element={<FollowUps />} />
+          <Route path="/followups/new/:caseId" element={<FollowUpForm />} />
+          <Route path="/followups/today" element={<TodayFollowUps />} />
+          <Route path="/cases/edit/:caseId" element={<EditCaseForm />} />
+        </Routes>
+      </div>
     </Router>
   );
 }
