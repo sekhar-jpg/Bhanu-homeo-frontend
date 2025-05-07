@@ -17,7 +17,7 @@ function EditCaseForm() {
   });
 
   useEffect(() => {
-    axios.get(`https://your-backend-url/cases/${caseId}`)
+    axios.get(https://backend-bhanu-app.onrender.com/cases/${caseId}`)
       .then((res) => {
         setFormData(res.data);
       })
@@ -33,7 +33,7 @@ function EditCaseForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put(`https://your-backend-url/cases/${caseId}`, formData)
+    axios.put(https://backend-bhanu-app.onrender.com/cases/${caseId}`, formData)
       .then(() => {
         alert('Case updated successfully');
         navigate('/followups');
