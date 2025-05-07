@@ -7,14 +7,11 @@ function EditCaseForm() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    name: '',
-    age: '',
-    gender: '',
-    phone: '',
-    date: '',
-    complaint: '',
-    prescription: '',
-    notes: '',
+    patientName: '',
+    phoneNumber: '',
+    symptoms: '',
+    remedyGiven: '',
+    followUpDate: '',
   });
 
   useEffect(() => {
@@ -51,7 +48,7 @@ function EditCaseForm() {
       <form onSubmit={handleSubmit}>
         {Object.entries(formData).map(([key, value]) => (
           <div className="mb-3" key={key}>
-            <label className="form-label">{key.toUpperCase()}</label>
+            <label className="form-label">{key.replace(/([A-Z])/g, ' $1').toUpperCase()}</label>
             <input
               type="text"
               className="form-control"
