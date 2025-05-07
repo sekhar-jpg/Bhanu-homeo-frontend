@@ -1,29 +1,23 @@
-import React, { useState } from 'react';
-import FollowUpForm from './components/FollowUpForm';
-import TodayFollowUps from './components/TodayFollowUps';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import AddCase from "./components/AddCase";
+import FollowUpForm from "./components/FollowUpForm";
+import FollowUpList from "./components/FollowUpList";
+import TodayFollowUps from "./components/TodayFollowUps";
+import Navbar from "./components/Navbar";
 
-const App = () => {
-  const [selectedCaseId, setSelectedCaseId] = useState(null);
-
-  // Function to update the state when a new follow-up is added
-  const handleFollowUpAdded = (newFollowUp) => {
-    console.log('New Follow-Up Added:', newFollowUp);
-    // Optionally, refresh the list of today's follow-ups or update the UI
-  };
-
+function App() {
   return (
-    <div>
-      <h1>Bhanu Homeopathy</h1>
-      
-      {/* Show today's follow-ups */}
-      <TodayFollowUps />
-
-      {/* When a case is selected, display the follow-up form */}
-      {selectedCaseId && (
-        <FollowUpForm caseId={selectedCaseId} onFollowUpAdded={handleFollowUpAdded} />
-      )}
-    </div>
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/add-case" element={<AddCase />} />
+        <Route path="/follow-up" element={<FollowUpForm />} />
+        <Route path="/all-followups" element={<FollowUpList />} />
+        <Route path="/today" element={<TodayFollowUps />} />
+      </Routes>
+    </Router>
   );
-};
+}
 
 export default App;
