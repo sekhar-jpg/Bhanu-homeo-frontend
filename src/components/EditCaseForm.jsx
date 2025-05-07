@@ -1,0 +1,68 @@
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
+function EditCaseForm() {
+  const { caseId } = useParams();
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    name: '',
+    age: '',
+    gender: '',
+    phone: '',
+    date: '',
+    complaint: '',
+    prescription: '',
+    notes: '',
+  });
+
+  useEffect(() => {
+    axios.get(`https://your-backend-url/cases/${caseId}`)
+      .then((res) => {
+        setFormData(res.data);
+      })
+      .catch((err) => {
+        console.error('Error fetching case details:', err);
+      });
+  }, [caseId]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios.put(`https://your-backend-url/cases/${caseId}`, formData)
+      .then(() => {
+        alert('Case updated successfully');
+        navigate('/followups');
+      })
+      .catch((err) => {
+        console.error('Error updating case:', err);
+      });
+  };
+
+  return (
+    <div className="container mt-4">
+      <h2>Edit Case</h2>
+      <form onSubmit={handleSubmit}>
+        {Object.entries(formData).map(([key, value]) => (
+          <div key={key} className="mb-3">
+            <label className="form-label">{key.toUpperCase()}</label>
+            <input
+              type="text"
+              className="form-control"
+              name={key}
+              value={value}
+              onChange={handleChange}
+            />
+          </div>
+        ))}
+        <button type="submit" className="btn btn-primary">Update Case</button>
+      </form>
+    </div>
+  );
+}
+
+export default EditCaseForm;
