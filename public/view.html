@@ -35,7 +35,7 @@
   <h2>Submitted Cases</h2>
   <input type="text" id="searchInput" placeholder="Search by name or phone..." />
   <button onclick="fetchCases()">🔁 All Cases</button>
-  <button onclick="fetchTodayFollowups()">📅 Today’s Follow-ups</button>
+  <button onclick="fetchTodayFollowUps()">📅 Today’s Follow-ups</button>
 
   <table>
     <thead>
@@ -53,22 +53,21 @@
   </table>
 
   <script>
-    const apiUrl = 'https://backend-bhanu-app.onrender.com/api/cases';
+    const BASE_URL = 'https://backend-bhanu-app.onrender.com';
 
     function formatDate(dateStr) {
       if (!dateStr) return '—';
-      const d = new Date(dateStr);
-      return d.toISOString().split('T')[0];
+      return new Date(dateStr).toISOString().split('T')[0];
     }
 
     async function fetchCases() {
-      const res = await fetch(apiUrl);
+      const res = await fetch(`${BASE_URL}/api/cases`);
       const data = await res.json();
       displayCases(data);
     }
 
-    async function fetchTodayFollowups() {
-      const res = await fetch(`${apiUrl}/followups/today`);
+    async function fetchTodayFollowUps() {
+      const res = await fetch(`${BASE_URL}/api/cases/followups/today`);
       const data = await res.json();
       displayCases(data);
     }
@@ -84,9 +83,9 @@
           .join('') || '—';
 
         row.innerHTML = `
-          <td>${c.patientName || '—'}</td>
-          <td>${c.phoneNumber || '—'}</td>
-          <td>${formatDate(c.visitDate)}</td>
+          <td>${c.patientName || c.name || '—'}</td>
+          <td>${c.phoneNumber || c.phone || '—'}</td>
+          <td>${formatDate(c.visitDate || c.date)}</td>
           <td>${c.symptoms || '—'}</td>
           <td>${c.mentalSymptoms || '—'}</td>
           <td>${followupsHtml}</td>
@@ -104,7 +103,7 @@
       const date = prompt("Enter follow-up date (YYYY-MM-DD):");
       const notes = prompt("Enter notes:");
       if (!date) return alert("Date is required.");
-      await fetch(`${apiUrl}/${caseId}/followups`, {
+      await fetch(`${BASE_URL}/api/cases/${caseId}/followups`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ date, notes })
@@ -113,16 +112,16 @@
     }
 
     async function editCase(caseId) {
-      const res = await fetch(`${apiUrl}/${caseId}`);
+      const res = await fetch(`${BASE_URL}/api/cases/${caseId}`);
       const data = await res.json();
 
-      const patientName = prompt("Edit patient name:", data.patientName);
-      const phoneNumber = prompt("Edit phone number:", data.phoneNumber);
+      const patientName = prompt("Edit patient name:", data.patientName || data.name);
+      const phoneNumber = prompt("Edit phone number:", data.phoneNumber || data.phone);
       const symptoms = prompt("Edit symptoms:", data.symptoms);
       const mentalSymptoms = prompt("Edit mental symptoms:", data.mentalSymptoms);
-      const remedyGiven = prompt("Edit remedy given:", data.remedyGiven);
+      const remedyGiven = prompt("Edit remedy given:", data.remedyGiven || '');
 
-      await fetch(`${apiUrl}/${caseId}`, {
+      await fetch(`${BASE_URL}/api/cases/${caseId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ patientName, phoneNumber, symptoms, mentalSymptoms, remedyGiven })
@@ -133,7 +132,7 @@
 
     async function deleteCase(id) {
       if (confirm("Are you sure you want to delete this case?")) {
-        await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
+        await fetch(`${BASE_URL}/api/cases/${id}`, { method: 'DELETE' });
         fetchCases();
       }
     }
@@ -147,6 +146,7 @@
       });
     });
 
+    // Initial load
     fetchCases();
   </script>
 </body>
