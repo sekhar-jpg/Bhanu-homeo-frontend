@@ -1,59 +1,52 @@
-import React, { useEffect, useState } from 'react';
-import FollowUpForm from './FollowUpForm';
-import FollowUpList from './FollowUpList';
+// src/components/FollowUpForm.js
+import React, { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-const FollowUps = () => {
-  const [cases, setCases] = useState([]);
-  const [selectedCase, setSelectedCase] = useState(null);
+const FollowUpForm = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [note, setNote] = useState('');
+  const [date, setDate] = useState('');
 
-  useEffect(() => {
-    fetch('https://backend-bhanu-app.onrender.com/api/cases')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          setCases(data.cases);
-        } else {
-          alert('Failed to fetch cases');
-        }
+  const handleSubmit = e => {
+    e.preventDefault();
+    const followUpData = { caseId: id, note, date };
+    axios.post('https://your-backend-url/followups', followUpData)
+      .then(() => {
+        alert('Follow-up added');
+        navigate(`/case/${id}`);
       })
-      .catch((err) => {
-        console.error('Error fetching cases:', err);
-        alert('Error fetching cases');
-      });
-  }, []);
+      .catch(err => alert('Error adding follow-up'));
+  };
 
   return (
-    <div>
-      <h2>All Cases</h2>
-      <ul>
-        {cases.map((c) => (
-          <li key={c._id}>
-            <strong>{c.name}</strong> ({c.age}/{c.gender}) - {c.phone}
-            <button onClick={() => setSelectedCase(c)}>Add/View Follow-Up</button>
-          </li>
-        ))}
-      </ul>
-
-      {selectedCase && (
-        <div style={{ marginTop: '30px' }}>
-          <h3>Selected Case: {selectedCase.name}</h3>
-          <p><strong>Age:</strong> {selectedCase.age}</p>
-          <p><strong>Gender:</strong> {selectedCase.gender}</p>
-          <p><strong>Phone:</strong> {selectedCase.phone}</p>
-          <p><strong>Complaints:</strong> {selectedCase.complaints}</p>
-          <p><strong>Prescription:</strong> {selectedCase.prescription}</p>
-
-          <hr />
-
-          <FollowUpForm caseId={selectedCase._id} onFollowUpAdded={() => {}} />
-
-          <hr />
-
-          <FollowUpList caseId={selectedCase._id} />
+    <div className="p-4">
+      <h2 className="text-xl font-bold mb-4">Add Follow-Up</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block">Note</label>
+          <textarea
+            value={note}
+            onChange={e => setNote(e.target.value)}
+            className="border rounded p-2 w-full"
+            required
+          />
         </div>
-      )}
+        <div>
+          <label className="block">Date</label>
+          <input
+            type="date"
+            value={date}
+            onChange={e => setDate(e.target.value)}
+            className="border rounded p-2 w-full"
+            required
+          />
+        </div>
+        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">Submit</button>
+      </form>
     </div>
   );
 };
 
-export default FollowUps;
+export default FollowUpForm;
