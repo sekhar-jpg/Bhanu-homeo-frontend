@@ -5,7 +5,7 @@ const TodayFollowUps = () => {
 
   useEffect(() => {
     // Fetch today's follow-ups from the backend
-    fetch('/api/today-follow-ups')
+    fetch('https://backend-bhanu-app.onrender.com/followups/today')
       .then((response) => response.json())
       .then((data) => setFollowUps(data.followUps))
       .catch((error) => console.error('Error fetching follow-ups:', error));
