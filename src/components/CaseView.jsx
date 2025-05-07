@@ -9,14 +9,14 @@ const CaseView = () => {
   const [caseData, setCaseData] = useState(null);
 
   useEffect(() => {
-    axios.get(`https://your-backend-url/cases/${id}`)
+    axios.get(https://backend-bhanu-app.onrender.com/cases/${id}`)
       .then(res => setCaseData(res.data))
       .catch(err => console.error('Error fetching case:', err));
   }, [id]);
 
   const handleDelete = () => {
     if (window.confirm('Are you sure to delete this case?')) {
-      axios.delete(`https://your-backend-url/cases/${id}`)
+      axios.delete(https://backend-bhanu-app.onrender.com/cases/${id}`)
         .then(() => {
           alert('Case deleted');
           navigate('/');
