@@ -1,70 +1,48 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Follow-Up Cases</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-    h2 {
-      color: #2b7a78;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-    }
-    th, td {
-      padding: 10px;
-      border: 1px solid #ddd;
-      text-align: left;
-    }
-    th {
-      background-color: #def2f1;
-    }
-  </style>
+  <title>Today's Follow-Ups</title>
 </head>
 <body>
-  <h2>Today's Follow-Up Cases</h2>
-  <table id="followup-table">
+  <h1>Today's Follow-Ups</h1>
+  <table border="1">
     <thead>
       <tr>
-        <th>Patient Name</th>
+        <th>Name</th>
         <th>Phone</th>
         <th>Follow-Up Date</th>
+        <th>Edit</th>
       </tr>
     </thead>
-    <tbody></tbody>
+    <tbody id="followUpList"></tbody>
   </table>
 
   <script>
-    // Replace with your actual backend API URL
-    const API_URL = 'https://your-backend-url.onrender.com/api/cases/follow-ups';
+    async function loadFollowUps() {
+      const today = new Date().toISOString().split("T")[0];
+      const res = await fetch("https://backend-bhanu-app.onrender.com/api/cases");
+      const data = await res.json();
 
-    fetch(API_URL)
-      .then(res => res.json())
-      .then(data => {
-        const tbody = document.querySelector("#followup-table tbody");
-        if (data.length === 0) {
-          tbody.innerHTML = "<tr><td colspan='3'>No follow-ups for today</td></tr>";
-        } else {
-          data.forEach(caseItem => {
-            const row = `<tr>
-              <td>${caseItem.name || 'N/A'}</td>
-              <td>${caseItem.phone || 'N/A'}</td>
-              <td>${new Date(caseItem.followUpDate).toLocaleDateString()}</td>
-            </tr>`;
-            tbody.innerHTML += row;
-          });
+      const list = document.getElementById("followUpList");
+      list.innerHTML = "";
+
+      data.forEach(caseItem => {
+        const caseFollowUp = caseItem.followUpDate?.split("T")[0];
+        if (caseFollowUp === today) {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${caseItem.name}</td>
+            <td>${caseItem.phone}</td>
+            <td>${caseFollowUp}</td>
+            <td><a href="case-form.html?id=${caseItem._id}">Edit</a></td>
+          `;
+          list.appendChild(row);
         }
-      })
-      .catch(err => {
-        console.error("Error fetching follow-ups:", err);
-        document.querySelector("#followup-table tbody").innerHTML = "<tr><td colspan='3'>Error loading data</td></tr>";
       });
+    }
+
+    loadFollowUps();
   </script>
 </body>
 </html>
