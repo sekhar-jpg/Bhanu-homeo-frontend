@@ -16,7 +16,7 @@ function EditCaseForm() {
 
   useEffect(() => {
     axios
-      .get(`https://bhanuhomeo-backend.onrender.com/cases/${caseId}`)
+      .get(`https://bhanuhomeo-backend.onrender.com/api/cases/${caseId}`)  // Corrected URL if needed
       .then((res) => setFormData(res.data))
       .catch((err) => console.error('Failed to fetch case data:', err));
   }, [caseId]);
@@ -32,10 +32,10 @@ function EditCaseForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .put(`https://bhanuhomeo-backend.onrender.com/cases/${caseId}`, formData)
+      .put(`https://bhanuhomeo-backend.onrender.com/api/cases/${caseId}`, formData)  // Corrected URL
       .then(() => {
         alert('Case updated successfully');
-        navigate('/followups');
+        navigate('/followups');  // Redirect to follow-ups page after update
       })
       .catch((err) => {
         console.error('Error updating case:', err);
@@ -48,7 +48,9 @@ function EditCaseForm() {
       <form onSubmit={handleSubmit}>
         {Object.entries(formData).map(([key, value]) => (
           <div className="mb-3" key={key}>
-            <label className="form-label">{key.replace(/([A-Z])/g, ' $1').toUpperCase()}</label>
+            <label className="form-label">
+              {key.replace(/([A-Z])/g, ' $1').toUpperCase()}
+            </label>
             <input
               type="text"
               className="form-control"
