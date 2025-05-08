@@ -11,7 +11,7 @@ const TodayFollowUps = () => {
   }, []);
 
   const fetchFollowUps = () => {
-    fetch('https://backend-bhanu-app.onrender.com/api/cases/followups/today')
+    fetch('https://backend-bhanu-app.onrender.com/api/followups/today')  // Corrected API endpoint
       .then((response) => response.json())
       .then((data) => {
         setFollowUps(data);
@@ -23,8 +23,8 @@ const TodayFollowUps = () => {
       });
   };
 
-  const handleEdit = (caseId) => {
-    navigate(`/cases/edit/${caseId}`);
+  const handleEdit = (followUpId) => {
+    navigate(`/followups/edit/${followUpId}`);  // Navigating to the correct edit route
   };
 
   const handleDelete = (followUpId) => {
@@ -69,7 +69,7 @@ const TodayFollowUps = () => {
               {followUp.date ? new Date(followUp.date).toLocaleDateString() : 'N/A'}
               <br />
               <button
-                onClick={() => handleEdit(followUp.caseId)}
+                onClick={() => handleEdit(followUp._id)}  // Editing the correct follow-up
                 style={{ marginRight: '10px', marginTop: '10px' }}
               >
                 Edit
