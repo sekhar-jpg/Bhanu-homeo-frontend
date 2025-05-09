@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
 import Webcam from "react-webcam";
 
@@ -42,9 +42,22 @@ const AddCase = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const file = dataURLtoFile(imageSrc, 'face.jpg');
-  setImageFile(file);
-  }, [webcamRef]);
+  const dataURLtoFile = (dataurl, filename) => {
+    const arr = dataurl.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) u8arr[n] = bstr.charCodeAt(n);
+    return new File([u8arr], filename, { type: mime });
+  };
+
+  const capture = () => {
+    const imageSrc = webcamRef.current.getScreenshot();
+    setPreview(imageSrc);
+    const file = dataURLtoFile(imageSrc, "face.jpg");
+    setImageFile(file);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -52,12 +65,11 @@ const AddCase = () => {
 
     if (imageFile) {
       const formData = new FormData();
-      const blob = await fetch(imageFile).then(res => res.blob());
-      formData.append("image", blob, "face.jpg");
+      formData.append("image", imageFile, "face.jpg");
 
       try {
         const response = await axios.post(
-          "http://localhost:10000/analyze-image", // Update with backend URL
+          "http://localhost:10000/analyze-image", // replace with your actual backend endpoint
           formData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
@@ -75,8 +87,7 @@ const AddCase = () => {
     };
 
     console.log("Final Case Submission:", caseData);
-
-    // Save the caseData to backend or database here
+    // Add your saving logic here (e.g., save to MongoDB or another backend)
   };
 
   return (
