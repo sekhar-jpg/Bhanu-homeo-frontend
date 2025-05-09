@@ -42,10 +42,8 @@ const AddCase = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const capture = useCallback(() => {
-    const imageSrc = webcamRef.current.getScreenshot();
-    setPreview(imageSrc);
-    setImageFile(imageSrc);
+  const file = dataURLtoFile(imageSrc, 'face.jpg');
+  setImageFile(file);
   }, [webcamRef]);
 
   const handleSubmit = async (e) => {
