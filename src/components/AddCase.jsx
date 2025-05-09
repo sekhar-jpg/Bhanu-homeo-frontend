@@ -63,7 +63,7 @@ const AddCase = () => {
     e.preventDefault();
     let analysisData = null;
 
-    // Step 1: Face Analysis
+    // 1. FACE ANALYSIS
     if (imageFile) {
       const formData = new FormData();
       formData.append("image", imageFile, "face.jpg");
@@ -81,28 +81,36 @@ const AddCase = () => {
       }
     }
 
-    // Step 2: Submit case to backend
     const caseData = {
       ...form,
       createdAt: new Date().toISOString(),
       faceAnalysis: analysisData,
     };
 
+    // 2. DUPLICATE CHECK
     try {
-      await axios.post("http://localhost:10000/submit-case", caseData);
-      alert("Case submitted successfully!");
-      setForm({  // Reset form
-        name: "", age: "", gender: "", maritalStatus: "", occupation: "",
-        address: "", phone: "", dateOfVisit: "", chiefComplaints: "",
-        historyPresent: "", pastHistory: "", familyHistory: "", appetite: "",
-        cravingsAversions: "", thirst: "", bowel: "", urine: "", sleep: "",
-        dreams: "", sweat: "", thermal: "", habits: "", menses: "",
-        mentalSymptoms: "", generalRemarks: "", doctorObservations: "",
-        prescription: ""
+      const checkRes = await axios.get("http://localhost:10000/cases/check-duplicate", {
+        params: {
+          name: form.name,
+          phone: form.phone,
+          dateOfVisit: form.dateOfVisit,
+        },
       });
+
+      if (checkRes.data.exists) {
+        alert("Duplicate case already exists!");
+        return;
+      }
+    } catch (err) {
+      console.error("Error checking duplicate:", err.message);
+    }
+
+    // 3. SAVE CASE TO BACKEND
+    try {
+      await axios.post("http://localhost:10000/cases", caseData);
+      alert("Case submitted successfully!");
+      setForm({ ...form, name: "", age: "", phone: "", dateOfVisit: "" }); // Reset some fields
       setPreview(null);
-      setImageFile(null);
-      setAnalysisResult(null);
     } catch (err) {
       console.error("Case submission failed:", err.message);
       alert("Case submission failed. Try again.");
@@ -167,6 +175,7 @@ const AddCase = () => {
       )}
 
       <textarea name="prescription" value={form.prescription} onChange={handleChange} placeholder="Prescription" />
+
       <button type="submit">Submit Case</button>
 
       {analysisResult && (
