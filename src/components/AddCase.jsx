@@ -63,13 +63,14 @@ const AddCase = () => {
     e.preventDefault();
     let analysisData = null;
 
+    // Step 1: Face Analysis
     if (imageFile) {
       const formData = new FormData();
       formData.append("image", imageFile, "face.jpg");
 
       try {
         const response = await axios.post(
-          "http://localhost:10000/analyze-image", // replace with your actual backend endpoint
+          "http://localhost:10000/analyze-image",
           formData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
@@ -80,14 +81,32 @@ const AddCase = () => {
       }
     }
 
+    // Step 2: Submit case to backend
     const caseData = {
       ...form,
       createdAt: new Date().toISOString(),
       faceAnalysis: analysisData,
     };
 
-    console.log("Final Case Submission:", caseData);
-    // Add your saving logic here (e.g., save to MongoDB or another backend)
+    try {
+      await axios.post("http://localhost:10000/submit-case", caseData);
+      alert("Case submitted successfully!");
+      setForm({  // Reset form
+        name: "", age: "", gender: "", maritalStatus: "", occupation: "",
+        address: "", phone: "", dateOfVisit: "", chiefComplaints: "",
+        historyPresent: "", pastHistory: "", familyHistory: "", appetite: "",
+        cravingsAversions: "", thirst: "", bowel: "", urine: "", sleep: "",
+        dreams: "", sweat: "", thermal: "", habits: "", menses: "",
+        mentalSymptoms: "", generalRemarks: "", doctorObservations: "",
+        prescription: ""
+      });
+      setPreview(null);
+      setImageFile(null);
+      setAnalysisResult(null);
+    } catch (err) {
+      console.error("Case submission failed:", err.message);
+      alert("Case submission failed. Try again.");
+    }
   };
 
   return (
@@ -148,7 +167,6 @@ const AddCase = () => {
       )}
 
       <textarea name="prescription" value={form.prescription} onChange={handleChange} placeholder="Prescription" />
-
       <button type="submit">Submit Case</button>
 
       {analysisResult && (
