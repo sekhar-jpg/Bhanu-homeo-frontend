@@ -1,19 +1,12 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 const AddCase = () => {
   const [name, setName] = useState("");
   const [symptoms, setSymptoms] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState("");
-
-  const convertToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
-  };
+  const [analysisResult, setAnalysisResult] = useState(null); // Optional: store face detection result
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -24,20 +17,37 @@ const AddCase = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let base64Image = "";
+    // Step 1: Upload image to backend and get face analysis
+    let analysisData = null;
+
     if (imageFile) {
-      base64Image = await convertToBase64(imageFile);
+      const formData = new FormData();
+      formData.append("image", imageFile);
+
+      try {
+        const response = await axios.post(
+          "http://localhost:10000/analyze-image", // Update if deployed
+          formData,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
+        analysisData = response.data;
+        setAnalysisResult(analysisData); // Optional: display result
+      } catch (error) {
+        console.error("Face analysis failed:", error.message);
+      }
     }
 
+    // Step 2: Prepare case object
     const newCase = {
       name,
       symptoms,
-      faceImage: base64Image,
       createdAt: new Date().toISOString(),
+      faceAnalysis: analysisData, // Optional: include AI result
     };
 
-    console.log("Case Data to Save:", newCase);
-    // Next step: Save to IndexedDB or API
+    console.log("✅ Final Case Data to Save:", newCase);
+
+    // TODO: Save newCase to your backend or local storage
   };
 
   return (
@@ -65,7 +75,15 @@ const AddCase = () => {
           style={{ width: 150, height: 150, marginTop: 10 }}
         />
       )}
-      <button type="submit">Save Case</button>
+      <button type="submit">Analyze and Save Case</button>
+
+      {/* Optional: Show face analysis result */}
+      {analysisResult && (
+        <div style={{ marginTop: "15px" }}>
+          <strong>Face Analysis Result:</strong>
+          <pre>{JSON.stringify(analysisResult, null, 2)}</pre>
+        </div>
+      )}
     </form>
   );
 };
