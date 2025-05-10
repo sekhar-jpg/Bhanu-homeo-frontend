@@ -3,7 +3,7 @@ import axios from "axios";
 import Webcam from "react-webcam";
 
 const AddCase = () => {
-  const [form, setForm] = useState({
+  const initialFormState = {
     name: "",
     age: "",
     gender: "",
@@ -31,11 +31,13 @@ const AddCase = () => {
     generalRemarks: "",
     doctorObservations: "",
     prescription: "",
-  });
+  };
 
+  const [form, setForm] = useState(initialFormState);
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [analysisResult, setAnalysisResult] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
   const webcamRef = useRef(null);
 
   const handleChange = (e) => {
@@ -63,7 +65,7 @@ const AddCase = () => {
     e.preventDefault();
     let analysisData = null;
 
-    // 1. FACE ANALYSIS
+    // FACE ANALYSIS
     if (imageFile) {
       const formData = new FormData();
       formData.append("image", imageFile, "face.jpg");
@@ -87,7 +89,7 @@ const AddCase = () => {
       faceAnalysis: analysisData,
     };
 
-    // 2. DUPLICATE CHECK
+    // DUPLICATE CHECK
     try {
       const checkRes = await axios.get("http://localhost:10000/cases/check-duplicate", {
         params: {
@@ -105,17 +107,29 @@ const AddCase = () => {
       console.error("Error checking duplicate:", err.message);
     }
 
-    // 3. SAVE CASE TO BACKEND
+    // SAVE CASE
     try {
       await axios.post("http://localhost:10000/cases", caseData);
       alert("Case submitted successfully!");
-      setForm({ ...form, name: "", age: "", phone: "", dateOfVisit: "" }); // Reset some fields
+      setForm(initialFormState);
       setPreview(null);
+      setImageFile(null);
+      setSubmitted(true);
     } catch (err) {
       console.error("Case submission failed:", err.message);
       alert("Case submission failed. Try again.");
     }
   };
+
+  if (submitted) {
+    return (
+      <div style={{ padding: "20px" }}>
+        <h2>✅ Case submitted successfully!</h2>
+        <p>You may go back or add another case.</p>
+        <button onClick={() => setSubmitted(false)}>Add Another Case</button>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} style={{ padding: "20px" }}>
