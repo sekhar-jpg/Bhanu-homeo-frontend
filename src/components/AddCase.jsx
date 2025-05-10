@@ -1,204 +1,138 @@
-import React, { useState, useRef } from "react";
-import axios from "axios";
-import Webcam from "react-webcam";
+import React, { useState, useRef } from 'react';
+import axios from 'axios';
 
 const AddCase = () => {
-  const initialFormState = {
-    name: "",
-    age: "",
-    gender: "",
-    maritalStatus: "",
-    occupation: "",
-    address: "",
-    phone: "",
-    dateOfVisit: "",
-    chiefComplaints: "",
-    historyPresent: "",
-    pastHistory: "",
-    familyHistory: "",
-    appetite: "",
-    cravingsAversions: "",
-    thirst: "",
-    bowel: "",
-    urine: "",
-    sleep: "",
-    dreams: "",
-    sweat: "",
-    thermal: "",
-    habits: "",
-    menses: "",
-    mentalSymptoms: "",
-    generalRemarks: "",
-    doctorObservations: "",
-    prescription: "",
-  };
+  const [formData, setFormData] = useState({
+    name: '',
+    age: '',
+    gender: '',
+    maritalStatus: '',
+    occupation: '',
+    address: '',
+    phone: '',
+    dateOfVisit: '',
+    chiefComplaints: '',
+    historyPresentIllness: '',
+    pastHistory: '',
+    familyHistory: '',
+    appetite: '',
+    cravingsAversions: '',
+    thirst: '',
+    bowelMovement: '',
+    urine: '',
+    sleep: '',
+    dreams: '',
+    sweat: '',
+    thermal: '',
+    habits: '',
+    menstrual: '',
+    mentalSymptoms: '',
+    generalRemarks: '',
+    doctorObservations: '',
+    prescription: ''
+  });
 
-  const [form, setForm] = useState(initialFormState);
-  const [imageFile, setImageFile] = useState(null);
-  const [preview, setPreview] = useState(null);
-  const [analysisResult, setAnalysisResult] = useState(null);
-  const [submitted, setSubmitted] = useState(false);
-  const webcamRef = useRef(null);
+  const [faceImage, setFaceImage] = useState(null);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const dataURLtoFile = (dataurl, filename) => {
-    const arr = dataurl.split(",");
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) u8arr[n] = bstr.charCodeAt(n);
-    return new File([u8arr], filename, { type: mime });
+  const handleCapture = async () => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    const context = canvas.getContext('2d');
+    context.drawImage(video, 0, 0, 320, 240);
+    canvas.toBlob((blob) => {
+      setFaceImage(blob);
+    }, 'image/jpeg');
   };
 
-  const capture = () => {
-    const imageSrc = webcamRef.current.getScreenshot();
-    setPreview(imageSrc);
-    const file = dataURLtoFile(imageSrc, "face.jpg");
-    setImageFile(file);
+  const startCamera = async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    videoRef.current.srcObject = stream;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let analysisData = null;
 
-    // FACE ANALYSIS
-    if (imageFile) {
-      const formData = new FormData();
-      formData.append("image", imageFile, "face.jpg");
-
-      try {
-        const response = await axios.post(
-          "http://localhost:10000/analyze-image",
-          formData,
-          { headers: { "Content-Type": "multipart/form-data" } }
-        );
-        analysisData = response.data;
-        setAnalysisResult(analysisData);
-      } catch (err) {
-        console.error("Face analysis failed:", err.message);
-      }
+    const data = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      data.append(key, value);
+    });
+    if (faceImage) {
+      data.append('faceImage', faceImage, 'face.jpg');
     }
 
-    const caseData = {
-      ...form,
-      createdAt: new Date().toISOString(),
-      faceAnalysis: analysisData,
-    };
-
-    // DUPLICATE CHECK
     try {
-      const checkRes = await axios.get("http://localhost:10000/cases/check-duplicate", {
-        params: {
-          name: form.name,
-          phone: form.phone,
-          dateOfVisit: form.dateOfVisit,
-        },
-      });
-
-      if (checkRes.data.exists) {
-        alert("Duplicate case already exists!");
-        return;
-      }
+      await axios.post('https://your-backend-url.com/submit-case', data);
+      alert('Case submitted successfully!');
     } catch (err) {
-      console.error("Error checking duplicate:", err.message);
-    }
-
-    // SAVE CASE
-    try {
-      await axios.post("http://localhost:10000/cases", caseData);
-      alert("Case submitted successfully!");
-      setForm(initialFormState);
-      setPreview(null);
-      setImageFile(null);
-      setSubmitted(true);
-    } catch (err) {
-      console.error("Case submission failed:", err.message);
-      alert("Case submission failed. Try again.");
+      alert('Error submitting case');
     }
   };
 
-  if (submitted) {
-    return (
-      <div style={{ padding: "20px" }}>
-        <h2>✅ Case submitted successfully!</h2>
-        <p>You may go back or add another case.</p>
-        <button onClick={() => setSubmitted(false)}>Add Another Case</button>
-      </div>
-    );
-  }
-
   return (
-    <form onSubmit={handleSubmit} style={{ padding: "20px" }}>
-      <h2>Submit Patient Case - Bhanu Homeopathy AI</h2>
+    <div className="p-4">
+      <h2 className="text-xl font-bold mb-4">Submit Patient Case - Bhanu Homeopathy AI</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {[
+          ['name', 'Name'],
+          ['age', 'Age'],
+          ['gender', 'Gender'],
+          ['maritalStatus', 'Marital Status'],
+          ['occupation', 'Occupation'],
+          ['address', 'Address'],
+          ['phone', 'Phone'],
+          ['dateOfVisit', 'Date of Visit (dd/mm/yyyy)'],
+          ['chiefComplaints', 'Chief Complaints'],
+          ['historyPresentIllness', 'History of Present Illness'],
+          ['pastHistory', 'Past History'],
+          ['familyHistory', 'Family History'],
+          ['appetite', 'Appetite'],
+          ['cravingsAversions', 'Cravings & Aversions'],
+          ['thirst', 'Thirst'],
+          ['bowelMovement', 'Bowel Movement'],
+          ['urine', 'Urine'],
+          ['sleep', 'Sleep'],
+          ['dreams', 'Dreams'],
+          ['sweat', 'Sweat'],
+          ['thermal', 'Thermal Nature (Hot/Cold)'],
+          ['habits', 'Habits'],
+          ['menstrual', 'Menstrual History (if applicable)'],
+          ['mentalSymptoms', 'Mental Symptoms'],
+          ['generalRemarks', 'General Remarks'],
+          ['doctorObservations', 'Doctor Observations'],
+          ['prescription', 'Prescription']
+        ].map(([name, label]) => (
+          <div key={name}>
+            <label className="block font-medium">{label}</label>
+            <input
+              name={name}
+              value={formData[name] || ''}
+              onChange={handleChange}
+              className="border rounded p-2 w-full"
+              required={name === 'name' || name === 'phone'}
+            />
+          </div>
+        ))}
 
-      <input name="name" value={form.name} onChange={handleChange} placeholder="Name" required />
-      <input name="age" value={form.age} onChange={handleChange} placeholder="Age" type="number" />
-      <select name="gender" value={form.gender} onChange={handleChange}>
-        <option value="">Gender</option>
-        <option>Male</option>
-        <option>Female</option>
-      </select>
-      <select name="maritalStatus" value={form.maritalStatus} onChange={handleChange}>
-        <option value="">Marital Status</option>
-        <option>Single</option>
-        <option>Married</option>
-      </select>
-      <input name="occupation" value={form.occupation} onChange={handleChange} placeholder="Occupation" />
-      <input name="address" value={form.address} onChange={handleChange} placeholder="Address" />
-      <input name="phone" value={form.phone} onChange={handleChange} placeholder="Phone" />
-      <input name="dateOfVisit" value={form.dateOfVisit} onChange={handleChange} placeholder="Date of Visit (dd/mm/yyyy)" />
-
-      <textarea name="chiefComplaints" value={form.chiefComplaints} onChange={handleChange} placeholder="Chief Complaints" />
-      <textarea name="historyPresent" value={form.historyPresent} onChange={handleChange} placeholder="History of Present Illness" />
-      <textarea name="pastHistory" value={form.pastHistory} onChange={handleChange} placeholder="Past History" />
-      <textarea name="familyHistory" value={form.familyHistory} onChange={handleChange} placeholder="Family History" />
-      <textarea name="appetite" value={form.appetite} onChange={handleChange} placeholder="Appetite" />
-      <textarea name="cravingsAversions" value={form.cravingsAversions} onChange={handleChange} placeholder="Cravings & Aversions" />
-      <textarea name="thirst" value={form.thirst} onChange={handleChange} placeholder="Thirst" />
-      <textarea name="bowel" value={form.bowel} onChange={handleChange} placeholder="Bowel Movement" />
-      <textarea name="urine" value={form.urine} onChange={handleChange} placeholder="Urine" />
-      <textarea name="sleep" value={form.sleep} onChange={handleChange} placeholder="Sleep" />
-      <textarea name="dreams" value={form.dreams} onChange={handleChange} placeholder="Dreams" />
-      <textarea name="sweat" value={form.sweat} onChange={handleChange} placeholder="Sweat" />
-      <textarea name="thermal" value={form.thermal} onChange={handleChange} placeholder="Thermal Nature (Hot/Cold)" />
-      <textarea name="habits" value={form.habits} onChange={handleChange} placeholder="Habits" />
-      <textarea name="menses" value={form.menses} onChange={handleChange} placeholder="Menstrual History (if applicable)" />
-      <textarea name="mentalSymptoms" value={form.mentalSymptoms} onChange={handleChange} placeholder="Mental Symptoms" />
-      <textarea name="generalRemarks" value={form.generalRemarks} onChange={handleChange} placeholder="General Remarks" />
-      <textarea name="doctorObservations" value={form.doctorObservations} onChange={handleChange} placeholder="Doctor Observations" />
-
-      <h3>Capture Patient Face</h3>
-      <Webcam
-        audio={false}
-        ref={webcamRef}
-        screenshotFormat="image/jpeg"
-        width="100%"
-        videoConstraints={{ facingMode: "user" }}
-      />
-      <button type="button" onClick={capture}>Capture Image</button>
-
-      {preview && (
         <div>
-          <h4>Captured Image:</h4>
-          <img src={preview} alt="Face" style={{ width: 150, height: 150 }} />
+          <label className="block font-medium">Capture Patient Face</label>
+          <video ref={videoRef} width="320" height="240" autoPlay className="mb-2 border" />
+          <canvas ref={canvasRef} width="320" height="240" className="hidden" />
+          <div className="flex gap-2 mt-2">
+            <button type="button" onClick={startCamera} className="bg-blue-500 text-white px-4 py-1 rounded">Start Camera</button>
+            <button type="button" onClick={handleCapture} className="bg-yellow-500 text-white px-4 py-1 rounded">Capture Image</button>
+          </div>
         </div>
-      )}
 
-      <textarea name="prescription" value={form.prescription} onChange={handleChange} placeholder="Prescription" />
-
-      <button type="submit">Submit Case</button>
-
-      {analysisResult && (
-        <div style={{ marginTop: "10px" }}>
-          <strong>Face Analysis Result:</strong>
-          <pre>{JSON.stringify(analysisResult, null, 2)}</pre>
-        </div>
-      )}
-    </form>
+        <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">Submit Case</button>
+      </form>
+    </div>
   );
 };
 
