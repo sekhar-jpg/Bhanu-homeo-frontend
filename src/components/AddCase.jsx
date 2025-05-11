@@ -70,6 +70,46 @@ const AddCase = () => {
     try {
       await axios.post('https://your-backend-url.com/submit-case', data);
       alert('Case submitted successfully!');
+
+      // ✅ Reset the form after successful submission
+      setFormData({
+        name: '',
+        age: '',
+        gender: '',
+        maritalStatus: '',
+        occupation: '',
+        address: '',
+        phone: '',
+        dateOfVisit: '',
+        chiefComplaints: '',
+        historyPresentIllness: '',
+        pastHistory: '',
+        familyHistory: '',
+        appetite: '',
+        cravingsAversions: '',
+        thirst: '',
+        bowelMovement: '',
+        urine: '',
+        sleep: '',
+        dreams: '',
+        sweat: '',
+        thermal: '',
+        habits: '',
+        menstrual: '',
+        mentalSymptoms: '',
+        generalRemarks: '',
+        doctorObservations: '',
+        prescription: ''
+      });
+      setFaceImage(null);
+
+      // Stop camera stream after submission
+      const stream = videoRef.current?.srcObject;
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+      videoRef.current.srcObject = null;
+
     } catch (err) {
       alert('Error submitting case');
     }
