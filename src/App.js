@@ -1,36 +1,41 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import AddCase from './components/AddCase';
-import FollowUps from './components/FollowUps';
-import FollowUpForm from './components/FollowUpForm';
-import TodayFollowUps from './components/TodayFollowUps';
-import EditCaseForm from './components/EditCaseForm';
-import CaseSheetForm from './components/CaseSheetForm'; // ✅ newly added form
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-function App() {
+// Import screens
+import CaseSheetForm from './components/CaseSheetForm';
+import CasesList from './components/CasesList'; // Dummy or real case list screen
+
+const Tab = createBottomTabNavigator();
+
+const App = () => {
   return (
-    <Router>
-      <div>
-        <Navbar />
-        <Routes>
-          {/* Homepage shows the AddCase screen */}
-          <Route path="/" element={<AddCase />} />
-          
-          {/* Route to see full Case Sheet Form */}
-          <Route path="/new-case" element={<CaseSheetForm />} />
+    <NavigationContainer>
+      <Tab.Navigator
+        initialRouteName="New Case"
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
 
-          {/* Follow-up related routes */}
-          <Route path="/followups" element={<FollowUps />} />
-          <Route path="/followups/new/:caseId" element={<FollowUpForm />} />
-          <Route path="/followups/today" element={<TodayFollowUps />} />
+            if (route.name === 'New Case') {
+              iconName = focused ? 'document-text' : 'document-text-outline';
+            } else if (route.name === 'Cases') {
+              iconName = focused ? 'list' : 'list-outline';
+            }
 
-          {/* Edit case screen */}
-          <Route path="/cases/edit/:caseId" element={<EditCaseForm />} />
-        </Routes>
-      </div>
-    </Router>
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+          tabBarActiveTintColor: '#007aff',
+          tabBarInactiveTintColor: 'gray',
+          headerShown: true,
+        })}
+      >
+        <Tab.Screen name="New Case" component={CaseSheetForm} />
+        <Tab.Screen name="Cases" component={CasesList} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
-}
+};
 
 export default App;
