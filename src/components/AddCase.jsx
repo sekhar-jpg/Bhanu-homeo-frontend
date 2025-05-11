@@ -68,7 +68,7 @@ const AddCase = () => {
     }
 
     try {
-      await axios.post('https://your-backend-url.com/submit-case', data);
+     await axios.post('/api/cases/', data);
       alert('Case submitted successfully!');
 
       // ✅ Reset the form after successful submission
