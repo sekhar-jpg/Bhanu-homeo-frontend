@@ -6,7 +6,8 @@ import FollowUps from './components/FollowUps';
 import FollowUpForm from './components/FollowUpForm';
 import TodayFollowUps from './components/TodayFollowUps';
 import EditCaseForm from './components/EditCaseForm';
-import FaceUpload from './components/FaceUpload'; // 👈 Import chesam
+import FaceUpload from './components/FaceUpload';
+import SubmitCaseForm from './components/SubmitCaseForm'; // ✅ Import this
 
 function App() {
   return (
@@ -19,7 +20,8 @@ function App() {
           <Route path="/followups/new/:caseId" element={<FollowUpForm />} />
           <Route path="/followups/today" element={<TodayFollowUps />} />
           <Route path="/cases/edit/:caseId" element={<EditCaseForm />} />
-          <Route path="/face-upload" element={<FaceUpload />} /> {/* 👈 New Route added */}
+          <Route path="/face-upload" element={<FaceUpload />} />
+          <Route path="/submit-case" element={<SubmitCaseForm />} /> {/* ✅ New route */}
         </Routes>
       </div>
     </Router>
