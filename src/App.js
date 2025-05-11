@@ -1,40 +1,34 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-
-// Import screens
+import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
+import './App.css'; // For styling bottom tab (we'll create this next)
 import CaseSheetForm from './components/CaseSheetForm';
-import CasesList from './components/CasesList'; // Dummy or real case list screen
+import CasesList from './components/CasesList'; // Real or dummy case list screen
 
-const Tab = createBottomTabNavigator();
+// Create Bottom Tabs (For Web)
+const BottomTabs = () => {
+  return (
+    <div className="bottom-tabs">
+      <NavLink to="/" className="tab-link">
+        📝 New Case
+      </NavLink>
+      <NavLink to="/cases" className="tab-link">
+        📋 Cases
+      </NavLink>
+    </div>
+  );
+};
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        initialRouteName="New Case"
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName;
-
-            if (route.name === 'New Case') {
-              iconName = focused ? 'document-text' : 'document-text-outline';
-            } else if (route.name === 'Cases') {
-              iconName = focused ? 'list' : 'list-outline';
-            }
-
-            return <Ionicons name={iconName} size={size} color={color} />;
-          },
-          tabBarActiveTintColor: '#007aff',
-          tabBarInactiveTintColor: 'gray',
-          headerShown: true,
-        })}
-      >
-        <Tab.Screen name="New Case" component={CaseSheetForm} />
-        <Tab.Screen name="Cases" component={CasesList} />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <Router>
+      <div className="content">
+        <Routes>
+          <Route path="/" element={<CaseSheetForm />} />
+          <Route path="/cases" element={<CasesList />} />
+        </Routes>
+        <BottomTabs /> {/* Add the bottom tabs navigation */}
+      </div>
+    </Router>
   );
 };
 
