@@ -1,0 +1,23 @@
+.bottom-tabs {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  background-color: #f8f8f8;
+  border-top: 1px solid #ccc;
+  padding: 10px 0;
+  z-index: 999;
+}
+
+.tab-link {
+  color: #555;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.tab-link.active {
+  color: #007aff;
+  font-weight: bold;
+}
