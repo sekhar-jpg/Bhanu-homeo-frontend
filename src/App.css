@@ -1,13 +1,12 @@
-/* src/App.css */
 body {
-  font-family: Arial, sans-serif;
   margin: 0;
-  padding: 0;
-  background-color: #f8f8f8; /* Light background for the app */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f4f4;
 }
 
 .content {
-  padding-bottom: 60px; /* Add space for the bottom navigation bar */
+  padding-bottom: 60px; /* space for bottom tabs */
+  min-height: 100vh;
 }
 
 .bottom-tabs {
@@ -15,21 +14,30 @@ body {
   bottom: 0;
   left: 0;
   width: 100%;
+  background-color: #ffffff;
+  border-top: 1px solid #ddd;
   display: flex;
   justify-content: space-around;
-  background-color: #f8f8f8;
-  border-top: 1px solid #ccc;
   padding: 10px 0;
-  z-index: 999;
+  box-shadow: 0 -1px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
 }
 
 .tab-link {
-  color: #555;
-  font-size: 14px;
   text-decoration: none;
+  color: #555;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tab-link:hover {
+  color: #007bff;
 }
 
 .tab-link.active {
-  color: #007aff;
+  color: #007bff;
   font-weight: bold;
 }
