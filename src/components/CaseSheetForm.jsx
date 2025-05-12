@@ -50,15 +50,15 @@ export default function CaseSheetForm() {
       onSubmit={handleSubmit}
       className="space-y-6 max-w-3xl mx-auto p-6 shadow rounded-xl"
       style={{
-        backgroundColor: '#F8F8F8', // Light gray background
+        backgroundColor: '#F8F8F8',
         borderRadius: '12px',
-        fontFamily: 'Segoe UI, sans-serif', // Modern font
-        color: '#333333', // Dark gray text
+        fontFamily: 'Segoe UI, sans-serif',
+        color: '#333333',
       }}
     >
       <h2
         className="text-3xl font-bold text-center mb-6"
-        style={{ color: '#1E90FF', fontFamily: 'Segoe UI, sans-serif' }} // Blue heading
+        style={{ color: '#1E90FF', fontFamily: 'Segoe UI, sans-serif' }}
       >
         Case Sheet
       </h2>
@@ -77,14 +77,7 @@ export default function CaseSheetForm() {
               placeholder="Enter name"
               value={formData.name}
               onChange={(e) => handleChange("name", e.target.value)}
-              style={{
-                borderColor: '#CCCCCC',
-                borderRadius: '6px',
-                color: '#333333',
-                fontFamily: 'Segoe UI, sans-serif',
-                fontSize: '16px',
-                padding: '8px',
-              }}
+              style={{ borderColor: '#CCCCCC', borderRadius: '6px', color: '#333333', fontFamily: 'Segoe UI, sans-serif', fontSize: '16px', padding: '8px' }}
             />
           </div>
           <div className="mb-3">
@@ -97,14 +90,7 @@ export default function CaseSheetForm() {
               placeholder="Enter age"
               value={formData.age}
               onChange={(e) => handleChange("age", e.target.value)}
-              style={{
-                borderColor: '#CCCCCC',
-                borderRadius: '6px',
-                color: '#333333',
-                fontFamily: 'Segoe UI, sans-serif',
-                fontSize: '16px',
-                padding: '8px',
-              }}
+              style={{ borderColor: '#CCCCCC', borderRadius: '6px', color: '#333333', fontFamily: 'Segoe UI, sans-serif', fontSize: '16px', padding: '8px' }}
             />
           </div>
           <div className="mb-3">
@@ -114,28 +100,15 @@ export default function CaseSheetForm() {
             <Select
               id="gender"
               onValueChange={(val) => handleChange("gender", val)}
-              style={{
-                borderColor: '#CCCCCC',
-                borderRadius: '6px',
-                color: '#333333',
-                fontFamily: 'Segoe UI, sans-serif',
-                fontSize: '16px',
-                padding: '8px',
-              }}
+              style={{ borderColor: '#CCCCCC', borderRadius: '6px', color: '#333333', fontFamily: 'Segoe UI, sans-serif', fontSize: '16px', padding: '8px' }}
             >
               <SelectTrigger style={{ backgroundColor: 'white', borderColor: '#CCCCCC', borderRadius: '6px', color: '#333333', fontFamily: 'Segoe UI, sans-serif', fontSize: '16px', padding: '8px' }}>
                 <SelectValue placeholder="Select gender" />
               </SelectTrigger>
               <SelectContent style={{ backgroundColor: 'white', borderColor: '#CCCCCC', borderRadius: '6px', fontFamily: 'Segoe UI, sans-serif', fontSize: '16px' }}>
-                <SelectItem value="Male" style={{ color: '#333333', fontFamily: 'Segoe UI, sans-serif', fontSize: '16px', padding: '8px' }}>
-                  Male
-                </SelectItem>
-                <SelectItem value="Female" style={{ color: '#333333', fontFamily: 'Segoe UI, sans-serif', fontSize: '16px', padding: '8px' }}>
-                  Female
-                </SelectItem>
-                <SelectItem value="Other" style={{ color: '#333333', fontFamily: 'Segoe UI, sans-serif', fontSize: '16px', padding: '8px' }}>
-                  Other
-                </SelectItem>
+                <SelectItem value="Male" style={{ color: '#333333', fontFamily: 'Segoe UI, sans-serif', fontSize: '16px', padding: '8px' }}>Male</SelectItem>
+                <SelectItem value="Female" style={{ color: '#333333', fontFamily: 'Segoe UI, sans-serif', fontSize: '16px', padding: '8px' }}>Female</SelectItem>
+                <SelectItem value="Other" style={{ color: '#333333', fontFamily: 'Segoe UI, sans-serif', fontSize: '16px', padding: '8px' }}>Other</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -148,14 +121,7 @@ export default function CaseSheetForm() {
               placeholder="Enter marital status"
               value={formData.maritalStatus}
               onChange={(e) => handleChange("maritalStatus", e.target.value)}
-              style={{
-                borderColor: '#CCCCCC',
-                borderRadius: '6px',
-                color: '#333333',
-                fontFamily: 'Segoe UI, sans-serif',
-                fontSize: '16px',
-                padding: '8px',
-              }}
+              style={{ borderColor: '#CCCCCC', borderRadius: '6px', color: '#333333', fontFamily: 'Segoe UI, sans-serif', fontSize: '16px', padding: '8px' }}
             />
           </div>
           <div className="mb-3">
@@ -166,3 +132,31 @@ export default function CaseSheetForm() {
               id="occupation"
               placeholder="Enter occupation"
               value={formData.occupation}
+              onChange={(e) => handleChange("occupation", e.target.value)}
+              style={{ borderColor: '#CCCCCC', borderRadius: '6px', color: '#333333', fontFamily: 'Segoe UI, sans-serif', fontSize: '16px', padding: '8px' }}
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="phone" className="block text-sm font-medium text-gray-700" style={{ fontSize: '16px', color: '#555555' }}>
+              Phone
+            </label>
+            <Input
+              id="phone"
+              placeholder="Enter phone number"
+              value={formData.phone}
+              onChange={(e) => handleChange("phone", e.target.value)}
+              style={{ borderColor: '#CCCCCC', borderRadius: '6px', color: '#333333', fontFamily: 'Segoe UI, sans-serif', fontSize: '16px', padding: '8px' }}
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="dateOfVisit" className="block text-sm font-medium text-gray-700" style={{ fontSize: '16px', color: '#555555' }}>
+              Date of Visit (dd/mm/yyyy)
+            </label>
+            <Input
+              id="dateOfVisit"
+              placeholder="Enter date of visit"
+              value={formData.dateOfVisit}
+              onChange={(e) => handleChange("dateOfVisit", e.target.value)}
+              style={{ borderColor: '#CCCCCC', borderRadius: '6px', color: '#333333', fontFamily: 'Segoe UI, sans-serif', fontSize: '16px', padding: '8px' }}
+            />
+          </div>
