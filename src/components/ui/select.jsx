@@ -1,4 +1,8 @@
 import React from 'react';
+import { SelectTrigger } from './select-trigger';
+import { SelectContent } from './select-content';
+import { SelectItem } from './select-item';
+import { SelectValue } from './select-value';
 
 const Select = ({ children, ...props }) => {
   return (
@@ -8,4 +12,4 @@ const Select = ({ children, ...props }) => {
   );
 };
 
-export { Select };
+export { Select, SelectTrigger, SelectContent, SelectItem, SelectValue };
