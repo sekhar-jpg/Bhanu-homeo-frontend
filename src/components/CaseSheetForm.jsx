@@ -45,7 +45,7 @@ const CaseSheetForm = () => {
   return (
     <div className="p-4 max-w-3xl mx-auto">
       <h2 className="text-2xl font-bold mb-4 text-center">New Case</h2>
-      <form onSubmit={handleSubmit} className="grid gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input name="name" placeholder="Name" onChange={handleChange} value={formData.name} className="border p-2 rounded" />
         <input name="age" placeholder="Age" onChange={handleChange} value={formData.age} className="border p-2 rounded" />
         <input name="gender" placeholder="Gender" onChange={handleChange} value={formData.gender} className="border p-2 rounded" />
@@ -54,7 +54,7 @@ const CaseSheetForm = () => {
         <input name="address" placeholder="Address" onChange={handleChange} value={formData.address} className="border p-2 rounded" />
         <input name="phone" placeholder="Phone" onChange={handleChange} value={formData.phone} className="border p-2 rounded" />
         <input name="dateOfVisit" placeholder="Date of Visit" onChange={handleChange} value={formData.dateOfVisit} className="border p-2 rounded" />
-        
+
         <textarea name="chiefComplaints" placeholder="Chief Complaints" onChange={handleChange} value={formData.chiefComplaints} className="border p-2 rounded" />
         <textarea name="historyPresentIllness" placeholder="History of Present Illness" onChange={handleChange} value={formData.historyPresentIllness} className="border p-2 rounded" />
         <textarea name="pastHistory" placeholder="Past History" onChange={handleChange} value={formData.pastHistory} className="border p-2 rounded" />
