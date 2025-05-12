@@ -377,40 +377,4 @@ export default function CaseSheetForm() {
             value={formData.thirst}
             onChange={(e) => handleChange("thirst", e.target.value)}
             style={{
-              borderColor: '#CCCCCC',
-              borderRadius: '6px',
-              color: '#333333',
-              fontFamily: 'Segoe UI, sans-serif',
-              fontSize: '16px',
-              padding: '8px',
-            }}
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="bowel" className="block text-sm font-medium text-gray-700" style={{ fontSize: '16px', color: '#555555' }}>
-            Bowel Movement
-          </label>
-          <Textarea
-            id="bowel"
-            placeholder="Enter bowel movement details"
-            value={formData.bowel}
-            onChange={(e) => handleChange("bowel", e.target.value)}
-            style={{
-              borderColor: '#CCCCCC',
-              borderRadius: '6px',
-              color: '#333333',
-              fontFamily: 'Segoe UI, sans-serif',
-              fontSize: '16px',
-              padding: '8px',
-            }}
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="urine" className="block text-sm font-medium text-gray-700" style={{ fontSize: '16px', color: '#555555' }}>
-            Urine
-          </label>
-          <Textarea
-            id="urine"
-            placeholder="Enter urine details"
-            value={formData.urine}
-            onChange={(e) => handleChange("urine", e.target.value
+              borderColor
