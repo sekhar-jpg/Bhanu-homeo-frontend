@@ -1,34 +1,75 @@
-// src/components/FollowUpForm.js
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
 
-const FollowUpForm = ({ caseId }) => {
-  const [followUpText, setFollowUpText] = useState('');
+const FollowUpForm = ({ onSubmit }) => {
+  const [formData, setFormData] = useState({
+    patientName: "",
+    date: "",
+    complaint: "",
+    prescription: "",
+  });
 
-  const handleFollowUpSubmit = async (e) => {
+  const handleChange = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post('https://your-backend-url.com/followups', {
-        caseId,
-        text: followUpText,
-      });
-      alert('Follow-up added successfully');
-      setFollowUpText('');
-    } catch (error) {
-      console.error('Error adding follow-up:', error);
-      alert('Failed to add follow-up');
-    }
+    if (onSubmit) onSubmit(formData);
+    alert("Follow-up saved!");
+    setFormData({
+      patientName: "",
+      date: "",
+      complaint: "",
+      prescription: "",
+    });
   };
 
   return (
-    <form onSubmit={handleFollowUpSubmit}>
-      <textarea
-        value={followUpText}
-        onChange={(e) => setFollowUpText(e.target.value)}
-        placeholder="Enter follow-up notes"
+    <form onSubmit={handleSubmit} className="space-y-4 max-w-2xl mx-auto p-6 bg-white shadow-md rounded-xl">
+      <h2 className="text-2xl font-bold text-center mb-4">Add Follow-Up</h2>
+
+      <input
+        type="text"
+        placeholder="Patient Name"
+        value={formData.patientName}
+        onChange={(e) => handleChange("patientName", e.target.value)}
+        className="w-full p-2 border rounded"
         required
       />
-      <button type="submit">Add Follow-Up</button>
+
+      <input
+        type="date"
+        placeholder="Date"
+        value={formData.date}
+        onChange={(e) => handleChange("date", e.target.value)}
+        className="w-full p-2 border rounded"
+        required
+      />
+
+      <textarea
+        placeholder="Complaint/Progress"
+        value={formData.complaint}
+        onChange={(e) => handleChange("complaint", e.target.value)}
+        className="w-full p-2 border rounded"
+        rows="3"
+        required
+      />
+
+      <textarea
+        placeholder="Prescription"
+        value={formData.prescription}
+        onChange={(e) => handleChange("prescription", e.target.value)}
+        className="w-full p-2 border rounded"
+        rows="2"
+        required
+      />
+
+      <button
+        type="submit"
+        className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
+      >
+        Save Follow-Up
+      </button>
     </form>
   );
 };
