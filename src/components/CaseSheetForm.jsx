@@ -146,17 +146,3 @@ export default function CaseSheetForm() {
               value={formData.phone}
               onChange={(e) => handleChange("phone", e.target.value)}
               style={{ borderColor: '#CCCCCC', borderRadius: '6px', color: '#333333', fontFamily: 'Segoe UI, sans-serif', fontSize: '16px', padding: '8px' }}
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="dateOfVisit" className="block text-sm font-medium text-gray-700" style={{ fontSize: '16px', color: '#555555' }}>
-              Date of Visit (dd/mm/yyyy)
-            </label>
-            <Input
-              id="dateOfVisit"
-              placeholder="Enter date of visit"
-              value={formData.dateOfVisit}
-              onChange={(e) => handleChange("dateOfVisit", e.target.value)}
-              style={{ borderColor: '#CCCCCC', borderRadius: '6px', color: '#333333', fontFamily: 'Segoe UI, sans-serif', fontSize: '16px', padding: '8px' }}
-            />
-          </div>
