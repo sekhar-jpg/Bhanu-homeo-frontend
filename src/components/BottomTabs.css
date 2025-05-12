@@ -28,3 +28,10 @@
   color: #C71585; /* Medium Violet Red color */
   font-weight: bold;
 }
+
+/* Icons for tabs (you might need to install a library like react-icons) */
+.tab-link span {
+  display: block;
+  font-size: 1.2em; /* Adjust size as needed */
+  margin-bottom: 5px;
+}
