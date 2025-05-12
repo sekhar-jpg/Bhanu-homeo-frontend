@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function CaseSheetForm() {
+const CaseSheetForm = () => {
   const [formData, setFormData] = useState({
     name: "",
     age: "",
@@ -28,174 +28,57 @@ export default function CaseSheetForm() {
     mentalSymptoms: "",
     generalRemarks: "",
     doctorObservations: "",
-    prescription: ""
+    prescription: "",
   });
 
-  const handleChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Submitted Case Data:", formData);
-    alert("Case saved!");
+    console.log("Submitted:", formData);
+    alert("Case Saved");
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-3xl mx-auto p-6 bg-white shadow rounded-xl">
-      <h2 className="text-2xl font-bold text-center mb-4">Case Sheet</h2>
+    <div className="p-4 max-w-3xl mx-auto">
+      <h2 className="text-2xl font-bold mb-4 text-center">New Case</h2>
+      <form onSubmit={handleSubmit} className="grid gap-4">
+        <input name="name" placeholder="Name" onChange={handleChange} value={formData.name} className="border p-2 rounded" />
+        <input name="age" placeholder="Age" onChange={handleChange} value={formData.age} className="border p-2 rounded" />
+        <input name="gender" placeholder="Gender" onChange={handleChange} value={formData.gender} className="border p-2 rounded" />
+        <input name="maritalStatus" placeholder="Marital Status" onChange={handleChange} value={formData.maritalStatus} className="border p-2 rounded" />
+        <input name="occupation" placeholder="Occupation" onChange={handleChange} value={formData.occupation} className="border p-2 rounded" />
+        <input name="address" placeholder="Address" onChange={handleChange} value={formData.address} className="border p-2 rounded" />
+        <input name="phone" placeholder="Phone" onChange={handleChange} value={formData.phone} className="border p-2 rounded" />
+        <input name="dateOfVisit" placeholder="Date of Visit" onChange={handleChange} value={formData.dateOfVisit} className="border p-2 rounded" />
+        
+        <textarea name="chiefComplaints" placeholder="Chief Complaints" onChange={handleChange} value={formData.chiefComplaints} className="border p-2 rounded" />
+        <textarea name="historyPresentIllness" placeholder="History of Present Illness" onChange={handleChange} value={formData.historyPresentIllness} className="border p-2 rounded" />
+        <textarea name="pastHistory" placeholder="Past History" onChange={handleChange} value={formData.pastHistory} className="border p-2 rounded" />
+        <textarea name="familyHistory" placeholder="Family History" onChange={handleChange} value={formData.familyHistory} className="border p-2 rounded" />
+        <textarea name="appetite" placeholder="Appetite" onChange={handleChange} value={formData.appetite} className="border p-2 rounded" />
+        <textarea name="cravingsAversions" placeholder="Cravings & Aversions" onChange={handleChange} value={formData.cravingsAversions} className="border p-2 rounded" />
+        <textarea name="thirst" placeholder="Thirst" onChange={handleChange} value={formData.thirst} className="border p-2 rounded" />
+        <textarea name="bowel" placeholder="Bowel" onChange={handleChange} value={formData.bowel} className="border p-2 rounded" />
+        <textarea name="urine" placeholder="Urine" onChange={handleChange} value={formData.urine} className="border p-2 rounded" />
+        <textarea name="sleep" placeholder="Sleep" onChange={handleChange} value={formData.sleep} className="border p-2 rounded" />
+        <textarea name="dreams" placeholder="Dreams" onChange={handleChange} value={formData.dreams} className="border p-2 rounded" />
+        <textarea name="sweat" placeholder="Sweat" onChange={handleChange} value={formData.sweat} className="border p-2 rounded" />
+        <textarea name="thermal" placeholder="Thermal Nature (Hot/Cold)" onChange={handleChange} value={formData.thermal} className="border p-2 rounded" />
+        <textarea name="habits" placeholder="Habits" onChange={handleChange} value={formData.habits} className="border p-2 rounded" />
+        <textarea name="menstrual" placeholder="Menstrual History (if applicable)" onChange={handleChange} value={formData.menstrual} className="border p-2 rounded" />
+        <textarea name="mentalSymptoms" placeholder="Mental Symptoms" onChange={handleChange} value={formData.mentalSymptoms} className="border p-2 rounded" />
+        <textarea name="generalRemarks" placeholder="General Remarks" onChange={handleChange} value={formData.generalRemarks} className="border p-2 rounded" />
+        <textarea name="doctorObservations" placeholder="Doctor Observations" onChange={handleChange} value={formData.doctorObservations} className="border p-2 rounded" />
+        <textarea name="prescription" placeholder="Prescription" onChange={handleChange} value={formData.prescription} className="border p-2 rounded" />
 
-      {/* Basic Info */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Input
-          placeholder="Name"
-          value={formData.name}
-          onChange={(e) => handleChange("name", e.target.value)}
-        />
-        <Input
-          type="number"
-          placeholder="Age"
-          value={formData.age}
-          onChange={(e) => handleChange("age", e.target.value)}
-        />
-
-        {/* Replace Select with a regular dropdown or input */}
-        <Input
-          placeholder="Gender"
-          value={formData.gender}
-          onChange={(e) => handleChange("gender", e.target.value)}
-        />
-
-        <Input
-          placeholder="Marital Status"
-          value={formData.maritalStatus}
-          onChange={(e) => handleChange("maritalStatus", e.target.value)}
-        />
-        <Input
-          placeholder="Occupation"
-          value={formData.occupation}
-          onChange={(e) => handleChange("occupation", e.target.value)}
-        />
-        <Input
-          placeholder="Phone"
-          value={formData.phone}
-          onChange={(e) => handleChange("phone", e.target.value)}
-        />
-        <Input
-          placeholder="Date of Visit (dd/mm/yyyy)"
-          value={formData.dateOfVisit}
-          onChange={(e) => handleChange("dateOfVisit", e.target.value)}
-        />
-      </div>
-
-      <Textarea
-        placeholder="Address"
-        value={formData.address}
-        onChange={(e) => handleChange("address", e.target.value)}
-      />
-
-      {/* Medical Info */}
-      <Textarea
-        placeholder="Chief Complaints"
-        value={formData.chiefComplaints}
-        onChange={(e) => handleChange("chiefComplaints", e.target.value)}
-      />
-      <Textarea
-        placeholder="History of Present Illness"
-        value={formData.historyPresentIllness}
-        onChange={(e) => handleChange("historyPresentIllness", e.target.value)}
-      />
-      <Textarea
-        placeholder="Past History"
-        value={formData.pastHistory}
-        onChange={(e) => handleChange("pastHistory", e.target.value)}
-      />
-      <Textarea
-        placeholder="Family History"
-        value={formData.familyHistory}
-        onChange={(e) => handleChange("familyHistory", e.target.value)}
-      />
-
-      {/* General Symptoms */}
-      <Textarea
-        placeholder="Appetite"
-        value={formData.appetite}
-        onChange={(e) => handleChange("appetite", e.target.value)}
-      />
-      <Textarea
-        placeholder="Cravings & Aversions"
-        value={formData.cravingsAversions}
-        onChange={(e) => handleChange("cravingsAversions", e.target.value)}
-      />
-      <Textarea
-        placeholder="Thirst"
-        value={formData.thirst}
-        onChange={(e) => handleChange("thirst", e.target.value)}
-      />
-      <Textarea
-        placeholder="Bowel Movement"
-        value={formData.bowel}
-        onChange={(e) => handleChange("bowel", e.target.value)}
-      />
-      <Textarea
-        placeholder="Urine"
-        value={formData.urine}
-        onChange={(e) => handleChange("urine", e.target.value)}
-      />
-      <Textarea
-        placeholder="Sleep"
-        value={formData.sleep}
-        onChange={(e) => handleChange("sleep", e.target.value)}
-      />
-      <Textarea
-        placeholder="Dreams"
-        value={formData.dreams}
-        onChange={(e) => handleChange("dreams", e.target.value)}
-      />
-      <Textarea
-        placeholder="Sweat"
-        value={formData.sweat}
-        onChange={(e) => handleChange("sweat", e.target.value)}
-      />
-      <Textarea
-        placeholder="Thermal Nature (Hot/Cold)"
-        value={formData.thermal}
-        onChange={(e) => handleChange("thermal", e.target.value)}
-      />
-      <Textarea
-        placeholder="Habits"
-        value={formData.habits}
-        onChange={(e) => handleChange("habits", e.target.value)}
-      />
-      <Textarea
-        placeholder="Menstrual History (if applicable)"
-        value={formData.menstrual}
-        onChange={(e) => handleChange("menstrual", e.target.value)}
-      />
-
-      {/* Mental + Doctor Section */}
-      <Textarea
-        placeholder="Mental Symptoms"
-        value={formData.mentalSymptoms}
-        onChange={(e) => handleChange("mentalSymptoms", e.target.value)}
-      />
-      <Textarea
-        placeholder="General Remarks"
-        value={formData.generalRemarks}
-        onChange={(e) => handleChange("generalRemarks", e.target.value)}
-      />
-      <Textarea
-        placeholder="Doctor Observations"
-        value={formData.doctorObservations}
-        onChange={(e) => handleChange("doctorObservations", e.target.value)}
-      />
-      <Textarea
-        placeholder="Prescription"
-        value={formData.prescription}
-        onChange={(e) => handleChange("prescription", e.target.value)}
-      />
-
-      <Button type="submit" className="w-full">Save Case</Button>
-    </form>
+        <button type="submit" className="bg-blue-600 text-white py-2 px-4 rounded">Submit</button>
+      </form>
+    </div>
   );
-}
+};
+
+export default CaseSheetForm;
