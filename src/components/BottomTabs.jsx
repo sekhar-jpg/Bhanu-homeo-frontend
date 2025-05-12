@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import CaseSheetForm from "./CaseSheetForm";
 import FollowUpForm from "./FollowUpForm";
 import CasesList from "./CasesList";
+import Navbar from "./Navbar";
 
 const BottomTabs = () => {
   const [activeTab, setActiveTab] = useState("newCase");
@@ -21,6 +22,8 @@ const BottomTabs = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <Navbar />
+
       <div className="flex-grow overflow-y-auto">{renderTabContent()}</div>
 
       <div className="fixed bottom-0 left-0 right-0 bg-white shadow-inner border-t border-gray-300 flex justify-around text-center py-2">
