@@ -406,4 +406,4 @@ export default function CaseSheetForm() {
           />
         </div>
         <div className="mb-3">
-          <label htmlFor="urine" className="block text-sm font-medium text-gray-700" style={{ fontSize: '16px', color: '#555555' }}>
+         <label htmlFor="urine" className="block text-sm font-medium text-gray-700" style={{ fontSize: '16px', color: '#555555' }}>
