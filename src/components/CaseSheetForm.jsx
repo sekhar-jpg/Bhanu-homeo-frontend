@@ -166,10 +166,3 @@ export default function CaseSheetForm() {
               id="occupation"
               placeholder="Enter occupation"
               value={formData.occupation}
-              onChange={(e) => handleChange("occupation", e.target.value)}
-              style={{
-                borderColor: '#CCCCCC',
-                borderRadius: '6px',
-                color: '#333333',
-                fontFamily: 'Segoe UI, sans-serif',
-                fontSize: '16
