@@ -49,8 +49,7 @@ function NewCaseForm() {
     <div className="p-4 max-w-2xl mx-auto">
       <h2 className="text-2xl font-semibold mb-4">New Case</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {[
-          "name", "age", "gender", "maritalStatus", "occupation", "address",
+        {["name", "age", "gender", "maritalStatus", "occupation", "address",
           "phone", "dateOfVisit", "chiefComplaints", "history", "pastHistory", "familyHistory",
           "appetite", "cravings", "thirst", "bowel", "urine", "sleep",
           "dreams", "sweat", "thermal", "habits", "menstrual", "mental",
