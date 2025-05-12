@@ -22,7 +22,14 @@ form {
   flex-direction: column;
 }
 
-input, textarea {
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+input,
+textarea {
   padding: 10px;
   font-size: 14px;
   border-radius: 5px;
