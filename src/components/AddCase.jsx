@@ -46,19 +46,21 @@ export default function NewCase() {
             <h2 className="text-lg font-semibold mb-4 text-blue-700">{section.title}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {section.fields.map((field, index) => (
-                <div key={index} className="flex flex-col">
-                  <label className="text-sm font-medium text-gray-700 mb-1">{field}</label>
+                <div key={index} className="mb-4">
+                  <label htmlFor={field} className="block text-sm font-medium text-gray-700">{field}:</label>
                   {isTextarea(field) ? (
                     <textarea
-                      className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      id={field}
+                      name={field}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                       rows={3}
-                      placeholder={`Enter ${field}`}
                     ></textarea>
                   ) : (
                     <input
                       type="text"
-                      className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder={`Enter ${field}`}
+                      id={field}
+                      name={field}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     />
                   )}
                 </div>
