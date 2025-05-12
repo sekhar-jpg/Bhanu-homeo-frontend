@@ -102,3 +102,15 @@ export default function CaseSheetForm() {
 
       <div className="mb-4">
         <h3 className="font-semibold text-lg mb-2" style={{ color: '#333', fontFamily: 'Poppins, sans-serif' }}>Mental Symptoms & Doctor's Notes</h3>
+        <div><label htmlFor="mentalSymptoms" className="block text-sm font-medium text-gray-700">Mental Symptoms</label><Textarea id="mentalSymptoms" placeholder="Enter mental symptoms" value={formData.mentalSymptoms} onChange={(e) => handleChange("mentalSymptoms", e.target.value)} style={{ borderColor: '#FFB6C1', borderRadius: '6px', color: '#333', fontFamily: 'Nunito Sans, sans-serif' }} /></div>
+        <div><label htmlFor="generalRemarks" className="block text-sm font-medium text-gray-700">General Remarks</label><Textarea id="generalRemarks" placeholder="Enter general remarks" value={formData.generalRemarks} onChange={(e) => handleChange("generalRemarks", e.target.value)} style={{ borderColor: '#FFB6C1', borderRadius: '6px', color: '#333', fontFamily: 'Nunito Sans, sans-serif' }} /></div>
+        <div><label htmlFor="doctorObservations" className="block text-sm font-medium text-gray-700">Doctor Observations</label><Textarea id="doctorObservations" placeholder="Enter doctor observations" value={formData.doctorObservations} onChange={(e) => handleChange("doctorObservations", e.target.value)} style={{ borderColor: '#FFB6C1', borderRadius: '6px', color: '#333', fontFamily: 'Nunito Sans, sans-serif' }} /></div>
+        <div><label htmlFor="prescription" className="block text-sm font-medium text-gray-700">Prescription</label><Textarea id="prescription" placeholder="Enter prescription" value={formData.prescription} onChange={(e) => handleChange("prescription", e.target.value)} style={{ borderColor: '#FFB6C1', borderRadius: '6px', color: '#333', fontFamily: 'Nunito Sans, sans-serif' }} /></div>
+      </div>
+
+      <div className="flex justify-center mt-6">
+        <Button type="submit" className="w-1/2" style={{ backgroundColor: '#FF69B4', color: 'white', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', fontFamily: 'Poppins, sans-serif', fontWeight: 'bold', padding: '10px' }}>Save Case</Button>
+      </div>
+    </form>
+  );
+}
