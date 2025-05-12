@@ -1,9 +1,9 @@
-import React from 'react';
-
-const Button = (props) => {
-  return (
-    <button {...props} className="bg-blue-500 text-white font-bold py-2 px-4 rounded" />
-  );
-};
-
-export { Button };
+const Button = ({ type = "button", className, children, onClick }) => (
+  <button
+    type={type}
+    className={`bg-blue-500 text-white py-2 px-4 rounded-md ${className}`}
+    onClick={onClick}
+  >
+    {children}
+  </button>
+);
