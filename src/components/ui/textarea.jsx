@@ -1,9 +1,8 @@
-import React from 'react';
-
-const Textarea = (props) => {
-  return (
-    <textarea {...props} className="border rounded p-2 w-full" />
-  );
-};
-
-export { Textarea };
+const Textarea = ({ placeholder, value, onChange }) => (
+  <textarea
+    value={value}
+    onChange={onChange}
+    placeholder={placeholder}
+    className="border p-2 rounded-md w-full h-32"
+  />
+);
