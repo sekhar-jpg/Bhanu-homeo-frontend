@@ -40,6 +40,10 @@ const CaseSheetForm = () => {
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        alert("Photo must be less than 2 MB.");
+        return;
+      }
       setFormData((prev) => ({ ...prev, photo: file }));
     }
   };
@@ -52,7 +56,7 @@ const CaseSheetForm = () => {
       data.append(key, formData[key]);
     }
 
-    // Submit logic here
+    // 🔄 Submit logic (send `data` to your backend)
     console.log("Submitted:", formData);
     alert("Case Saved");
   };
@@ -104,7 +108,7 @@ const CaseSheetForm = () => {
         {renderInput("Phone", "phone")}
         {renderInput("Date of Visit", "dateOfVisit", "date")}
 
-        {/* ✅ Photo Upload Field */}
+        {/* ✅ Photo Upload Field with Size Restriction */}
         <div className="flex items-start gap-4">
           <label htmlFor="photo" className="w-48 text-right pt-2 font-medium">
             Upload Photo
