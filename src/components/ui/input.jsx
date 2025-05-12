@@ -1,9 +1,9 @@
-import React from 'react';
-
-const Input = (props) => {
-  return (
-    <input {...props} className="border rounded p-2 w-full" />
-  );
-};
-
-export { Input };
+const Input = ({ type = "text", placeholder, value, onChange }) => (
+  <input
+    type={type}
+    value={value}
+    onChange={onChange}
+    placeholder={placeholder}
+    className="border p-2 rounded-md w-full"
+  />
+);
