@@ -1,33 +1,61 @@
-// src/components/CasesList.jsx
-import React, { useState, useEffect } from 'react';
-
-// Dummy data for the list of cases (you can replace this with real data later)
-const dummyCases = [
-  { id: 1, name: 'Case 1', date: '2025-05-01', complaint: 'Headache' },
-  { id: 2, name: 'Case 2', date: '2025-05-02', complaint: 'Stomach ache' },
-  { id: 3, name: 'Case 3', date: '2025-05-03', complaint: 'Cough' },
-];
+import React, { useEffect, useState } from "react";
 
 const CasesList = () => {
   const [cases, setCases] = useState([]);
 
-  // Fetch cases data (using dummy data for now)
+  // Dummy fetch for now — replace with API call
   useEffect(() => {
-    setCases(dummyCases);  // Replace with an API call later
+    const dummyCases = [
+      {
+        id: 1,
+        name: "Ravi Kumar",
+        age: 28,
+        gender: "Male",
+        phone: "9876543210",
+        dateOfVisit: "2025-05-12",
+        chiefComplaints: "Headache, anxiety",
+      },
+      {
+        id: 2,
+        name: "Sita Devi",
+        age: 35,
+        gender: "Female",
+        phone: "9845123456",
+        dateOfVisit: "2025-05-11",
+        chiefComplaints: "Joint pain, weakness",
+      },
+    ];
+    setCases(dummyCases);
   }, []);
 
   return (
-    <div>
-      <h2>List of Cases</h2>
-      <ul>
-        {cases.map((caseItem) => (
-          <li key={caseItem.id}>
-            <strong>{caseItem.name}</strong><br />
-            Date: {caseItem.date}<br />
-            Complaint: {caseItem.complaint}
-          </li>
-        ))}
-      </ul>
+    <div className="max-w-5xl mx-auto p-4">
+      <h2 className="text-2xl font-bold text-center mb-6">All Cases</h2>
+
+      {cases.length === 0 ? (
+        <p className="text-center text-gray-500">No cases available.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {cases.map((caseItem) => (
+            <div
+              key={caseItem.id}
+              className="bg-white shadow-md rounded-lg p-4 hover:shadow-lg transition"
+            >
+              <div className="flex justify-between mb-2">
+                <h3 className="text-lg font-semibold">{caseItem.name}</h3>
+                <span className="text-sm text-gray-500">{caseItem.dateOfVisit}</span>
+              </div>
+              <p><strong>Age:</strong> {caseItem.age}</p>
+              <p><strong>Gender:</strong> {caseItem.gender}</p>
+              <p><strong>Phone:</strong> {caseItem.phone}</p>
+              <p className="mt-2 text-gray-700"><strong>Complaints:</strong> {caseItem.chiefComplaints}</p>
+              <button className="mt-4 w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition">
+                View Full Case
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
