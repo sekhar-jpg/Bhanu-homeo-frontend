@@ -374,7 +374,3 @@ export default function CaseSheetForm() {
           <Textarea
             id="thirst"
             placeholder="Enter thirst details"
-            value={formData.thirst}
-            onChange={(e) => handleChange("thirst", e.target.value)}
-            style={{
-              borderColor
