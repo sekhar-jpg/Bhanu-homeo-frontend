@@ -1,82 +1,219 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-export default function NewCase() {
-  const sections = [
-    {
-      title: "Patient Details",
-      fields: ["Name", "Age", "Gender", "Marital Status", "Occupation", "Address", "Phone", "Date of Visit"]
-    },
-    {
-      title: "Symptoms",
-      fields: ["Chief Complaints", "History of Present Illness", "Past History", "Family History"]
-    },
-    {
-      title: "General Observations",
-      fields: ["Appetite", "Cravings & Aversions", "Thirst", "Bowel", "Urine", "Sleep", "Dreams", "Sweat", "Thermal Nature (Hot/Cold)", "Habits"]
-    },
-    {
-      title: "Female History",
-      fields: ["Menstrual History (if applicable)"]
-    },
-    {
-      title: "Mental & Physical Overview",
-      fields: ["Mental Symptoms", "General Remarks"]
-    },
-    {
-      title: "Doctor Analysis",
-      fields: ["Rubrics selected", "Miasm", "Temperament", "Constitution", "Kingdoms", "Probable remedies", "Reasons for remedy selection"]
-    },
-    {
-      title: "Prescription",
-      fields: ["Doctor Observations", "Prescription"]
-    }
-  ];
+const NewCase = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    age: '',
+    gender: '',
+    maritalStatus: '',
+    occupation: '',
+    address: '',
+    phone: '',
+    dateOfVisit: '',
+    complaints: '',
+    presentIllness: '',
+    pastHistory: '',
+    familyHistory: '',
+    appetite: '',
+    thirst: '',
+  });
 
-  const isTextarea = (field) => {
-    const textAreas = ["Chief Complaints", "History of Present Illness", "Past History", "Family History", "Mental Symptoms", "General Remarks", "Rubrics selected", "Reasons for remedy selection", "Doctor Observations", "Prescription"];
-    return textAreas.includes(field);
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(formData);
+    // submit logic here
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">New Case</h1>
-      <form className="space-y-10">
-        {sections.map((section, idx) => (
-          <div key={idx} className="border rounded-lg p-4 shadow-sm">
-            <h2 className="text-lg font-semibold mb-4 text-blue-700">{section.title}</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {section.fields.map((field, index) => (
-                <div key={index} className="mb-4">
-                  <label htmlFor={field} className="block text-sm font-medium text-gray-700">{field}:</label>
-                  {isTextarea(field) ? (
-                    <textarea
-                      id={field}
-                      name={field}
-                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                      rows={3}
-                    ></textarea>
-                  ) : (
-                    <input
-                      type="text"
-                      id={field}
-                      name={field}
-                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
+    <div className="p-4 max-w-3xl mx-auto">
+      <h2 className="text-2xl font-semibold mb-6">New Case</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium">Name</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full border border-gray-400 rounded px-3 py-2"
+              placeholder="Enter patient name"
+            />
           </div>
-        ))}
-        <div className="pt-4">
-          <button
-            type="submit"
-            className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
-          >
-            Submit
-          </button>
+
+          <div>
+            <label className="block text-sm font-medium">Age</label>
+            <input
+              type="number"
+              name="age"
+              value={formData.age}
+              onChange={handleChange}
+              className="w-full border border-gray-400 rounded px-3 py-2"
+              placeholder="Enter age"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium">Gender</label>
+            <input
+              type="text"
+              name="gender"
+              value={formData.gender}
+              onChange={handleChange}
+              className="w-full border border-gray-400 rounded px-3 py-2"
+              placeholder="Enter gender"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium">Marital Status</label>
+            <input
+              type="text"
+              name="maritalStatus"
+              value={formData.maritalStatus}
+              onChange={handleChange}
+              className="w-full border border-gray-400 rounded px-3 py-2"
+              placeholder="Single / Married / etc"
+            />
+          </div>
         </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium">Occupation</label>
+            <input
+              type="text"
+              name="occupation"
+              value={formData.occupation}
+              onChange={handleChange}
+              className="w-full border border-gray-400 rounded px-3 py-2"
+              placeholder="Occupation"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium">Address</label>
+            <input
+              type="text"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              className="w-full border border-gray-400 rounded px-3 py-2"
+              placeholder="Address"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium">Phone</label>
+            <input
+              type="text"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              className="w-full border border-gray-400 rounded px-3 py-2"
+              placeholder="Phone number"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium">Date of Visit</label>
+            <input
+              type="date"
+              name="dateOfVisit"
+              value={formData.dateOfVisit}
+              onChange={handleChange}
+              className="w-full border border-gray-400 rounded px-3 py-2"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium">Chief Complaints</label>
+          <textarea
+            name="complaints"
+            value={formData.complaints}
+            onChange={handleChange}
+            className="w-full border border-gray-400 rounded px-3 py-2"
+            rows={2}
+            placeholder="Enter chief complaints"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium">History of Present Illness</label>
+          <textarea
+            name="presentIllness"
+            value={formData.presentIllness}
+            onChange={handleChange}
+            className="w-full border border-gray-400 rounded px-3 py-2"
+            rows={2}
+            placeholder="Enter history of present illness"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium">Past History</label>
+          <textarea
+            name="pastHistory"
+            value={formData.pastHistory}
+            onChange={handleChange}
+            className="w-full border border-gray-400 rounded px-3 py-2"
+            rows={2}
+            placeholder="Enter past history"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium">Family History</label>
+          <textarea
+            name="familyHistory"
+            value={formData.familyHistory}
+            onChange={handleChange}
+            className="w-full border border-gray-400 rounded px-3 py-2"
+            rows={2}
+            placeholder="Enter family history"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium">Appetite</label>
+            <input
+              type="text"
+              name="appetite"
+              value={formData.appetite}
+              onChange={handleChange}
+              className="w-full border border-gray-400 rounded px-3 py-2"
+              placeholder="Appetite"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium">Thirst</label>
+            <input
+              type="text"
+              name="thirst"
+              value={formData.thirst}
+              onChange={handleChange}
+              className="w-full border border-gray-400 rounded px-3 py-2"
+              placeholder="Thirst"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          className="mt-6 px-6 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700"
+        >
+          Submit
+        </button>
       </form>
     </div>
   );
-}
+};
+
+export default NewCase;
