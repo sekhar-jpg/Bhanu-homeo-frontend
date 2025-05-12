@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import imageCompression from "browser-image-compression";
 
 const CaseSheetForm = () => {
   const [formData, setFormData] = useState({
@@ -30,6 +31,7 @@ const CaseSheetForm = () => {
     doctorObservations: "",
     prescription: "",
     photo: null,
+    photoPreview: null,
   });
 
   const handleChange = (e) => {
@@ -37,14 +39,30 @@ const CaseSheetForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handlePhotoChange = (e) => {
+  const handlePhotoChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        alert("Photo must be less than 2 MB.");
-        return;
+      try {
+        let compressedFile = file;
+
+        if (file.size > 2 * 1024 * 1024) {
+          const options = {
+            maxSizeMB: 2,
+            maxWidthOrHeight: 1024,
+            useWebWorker: true,
+          };
+          compressedFile = await imageCompression(file, options);
+        }
+
+        setFormData((prev) => ({
+          ...prev,
+          photo: compressedFile,
+          photoPreview: URL.createObjectURL(compressedFile),
+        }));
+      } catch (error) {
+        console.error("Image compression error:", error);
+        alert("Failed to process the image.");
       }
-      setFormData((prev) => ({ ...prev, photo: file }));
     }
   };
 
@@ -53,10 +71,12 @@ const CaseSheetForm = () => {
 
     const data = new FormData();
     for (const key in formData) {
-      data.append(key, formData[key]);
+      if (key !== "photoPreview") {
+        data.append(key, formData[key]);
+      }
     }
 
-    // 🔄 Submit logic (send `data` to your backend)
+    // 🔄 Submit logic
     console.log("Submitted:", formData);
     alert("Case Saved");
   };
@@ -108,7 +128,7 @@ const CaseSheetForm = () => {
         {renderInput("Phone", "phone")}
         {renderInput("Date of Visit", "dateOfVisit", "date")}
 
-        {/* ✅ Photo Upload Field with Size Restriction */}
+        {/* ✅ Photo Upload with Auto-Compression */}
         <div className="flex items-start gap-4">
           <label htmlFor="photo" className="w-48 text-right pt-2 font-medium">
             Upload Photo
@@ -121,9 +141,9 @@ const CaseSheetForm = () => {
               onChange={handlePhotoChange}
               className="block border border-gray-300 rounded px-3 py-2"
             />
-            {formData.photo && (
+            {formData.photoPreview && (
               <img
-                src={URL.createObjectURL(formData.photo)}
+                src={formData.photoPreview}
                 alt="Preview"
                 className="mt-2 w-32 h-32 object-cover rounded shadow"
               />
