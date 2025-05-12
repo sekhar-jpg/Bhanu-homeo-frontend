@@ -29,6 +29,7 @@ const CaseSheetForm = () => {
     generalRemarks: "",
     doctorObservations: "",
     prescription: "",
+    photo: null,
   });
 
   const handleChange = (e) => {
@@ -36,8 +37,22 @@ const CaseSheetForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prev) => ({ ...prev, photo: file }));
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const data = new FormData();
+    for (const key in formData) {
+      data.append(key, formData[key]);
+    }
+
+    // Submit logic here
     console.log("Submitted:", formData);
     alert("Case Saved");
   };
@@ -88,6 +103,29 @@ const CaseSheetForm = () => {
         {renderInput("Address", "address")}
         {renderInput("Phone", "phone")}
         {renderInput("Date of Visit", "dateOfVisit", "date")}
+
+        {/* ✅ Photo Upload Field */}
+        <div className="flex items-start gap-4">
+          <label htmlFor="photo" className="w-48 text-right pt-2 font-medium">
+            Upload Photo
+          </label>
+          <div className="flex-1">
+            <input
+              type="file"
+              id="photo"
+              accept="image/*"
+              onChange={handlePhotoChange}
+              className="block border border-gray-300 rounded px-3 py-2"
+            />
+            {formData.photo && (
+              <img
+                src={URL.createObjectURL(formData.photo)}
+                alt="Preview"
+                className="mt-2 w-32 h-32 object-cover rounded shadow"
+              />
+            )}
+          </div>
+        </div>
 
         {renderTextarea("Chief Complaints", "chiefComplaints")}
         {renderTextarea("History of Present Illness", "historyPresentIllness")}
