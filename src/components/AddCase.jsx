@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import "./App.css"; // Or update this path if you're using a different CSS file
+import Input from "@/components/ui/input";
+import Textarea from "@/components/ui/textarea";
 
 const NewCase = () => {
   const [formData, setFormData] = useState({
@@ -12,7 +13,7 @@ const NewCase = () => {
     phone: "",
     dateOfVisit: "",
     chiefComplaints: "",
-    presentIllness: "",
+    historyOfPresentIllness: "",
     pastHistory: "",
     familyHistory: "",
     appetite: "",
@@ -29,123 +30,62 @@ const NewCase = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Submitted Data:", formData);
-    // Submit logic here
   };
 
   return (
-    <div className="form-container">
-      <h2>New Case</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="max-w-3xl mx-auto p-6 font-sans">
+      <h2 className="text-2xl font-semibold mb-6">New Case</h2>
+      <form onSubmit={handleSubmit} className="space-y-5">
         {/* Row: Name, Age, Gender */}
-        <div className="row-flex">
-          <div className="field-box">
-            <label>Name</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-            />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="block mb-1">Name</label>
+            <Input name="name" value={formData.name} onChange={handleChange} />
           </div>
-          <div className="field-box">
-            <label>Age</label>
-            <input
-              type="number"
-              name="age"
-              value={formData.age}
-              onChange={handleChange}
-            />
+          <div>
+            <label className="block mb-1">Age</label>
+            <Input name="age" value={formData.age} onChange={handleChange} type="number" />
           </div>
-          <div className="field-box">
-            <label>Gender</label>
-            <input
-              type="text"
-              name="gender"
-              value={formData.gender}
-              onChange={handleChange}
-            />
+          <div>
+            <label className="block mb-1">Gender</label>
+            <Input name="gender" value={formData.gender} onChange={handleChange} />
           </div>
         </div>
 
-        {/* Vertical Fields */}
-        <div className="form-group">
-          <label>Marital Status</label>
-          <input
-            type="text"
-            name="maritalStatus"
-            value={formData.maritalStatus}
-            onChange={handleChange}
-          />
+        {/* Vertical group fields */}
+        {[
+          ["Marital Status", "maritalStatus"],
+          ["Occupation", "occupation"],
+          ["Address", "address"],
+          ["Phone", "phone"],
+          ["Date of Visit", "dateOfVisit"],
+        ].map(([label, name]) => (
+          <div key={name}>
+            <label className="block mb-1">{label}</label>
+            <Input name={name} value={formData[name]} onChange={handleChange} />
+          </div>
+        ))}
 
-          <label>Occupation</label>
-          <input
-            type="text"
-            name="occupation"
-            value={formData.occupation}
-            onChange={handleChange}
-          />
+        {/* Textarea fields */}
+        {[
+          ["Chief Complaints", "chiefComplaints"],
+          ["History of Present Illness", "historyOfPresentIllness"],
+          ["Past History", "pastHistory"],
+          ["Family History", "familyHistory"],
+          ["Appetite", "appetite"],
+        ].map(([label, name]) => (
+          <div key={name}>
+            <label className="block mb-1">{label}</label>
+            <Textarea name={name} value={formData[name]} onChange={handleChange} />
+          </div>
+        ))}
 
-          <label>Address</label>
-          <input
-            type="text"
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-          />
-
-          <label>Phone</label>
-          <input
-            type="text"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-          />
-
-          <label>Date of Visit</label>
-          <input
-            type="date"
-            name="dateOfVisit"
-            value={formData.dateOfVisit}
-            onChange={handleChange}
-          />
-
-          <label>Chief Complaints</label>
-          <textarea
-            name="chiefComplaints"
-            value={formData.chiefComplaints}
-            onChange={handleChange}
-          />
-
-          <label>History of Present Illness</label>
-          <textarea
-            name="presentIllness"
-            value={formData.presentIllness}
-            onChange={handleChange}
-          />
-
-          <label>Past History</label>
-          <textarea
-            name="pastHistory"
-            value={formData.pastHistory}
-            onChange={handleChange}
-          />
-
-          <label>Family History</label>
-          <textarea
-            name="familyHistory"
-            value={formData.familyHistory}
-            onChange={handleChange}
-          />
-
-          <label>Appetite</label>
-          <textarea
-            name="appetite"
-            value={formData.appetite}
-            onChange={handleChange}
-          />
-        </div>
-
-        <button type="submit">Submit</button>
+        <button
+          type="submit"
+          className="mt-4 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+        >
+          Submit
+        </button>
       </form>
     </div>
   );
