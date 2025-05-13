@@ -116,11 +116,10 @@ Based on this case, provide:
 6. 2-3 similar remedies with reasons
 `;
 
-    const completion = await openai.createChatCompletion({
-      model: "gpt-4",
+  const completion = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: prompt }],
     });
-
     const analysis = completion.data.choices[0].message.content;
     res.json({ success: true, analysis });
   } catch (error) {
