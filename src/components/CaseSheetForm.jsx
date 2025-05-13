@@ -1,187 +1,135 @@
-import React, { useState } from "react";
-import imageCompression from "browser-image-compression";
+// Import required modules
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const dotenv = require('dotenv');
+const bodyParser = require('body-parser');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+const tf = require('@tensorflow/tfjs-node');
+const blazeface = require('@tensorflow-models/blazeface');
+const { Configuration, OpenAIApi } = require('openai');
 
-const CaseSheetForm = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    age: "",
-    gender: "",
-    maritalStatus: "",
-    occupation: "",
-    address: "",
-    phone: "",
-    dateOfVisit: "",
-    chiefComplaints: "",
-    historyPresentIllness: "",
-    pastHistory: "",
-    familyHistory: "",
-    appetite: "",
-    cravingsAversions: "",
-    thirst: "",
-    bowel: "",
-    urine: "",
-    sleep: "",
-    dreams: "",
-    sweat: "",
-    thermal: "",
-    habits: "",
-    menstrual: "",
-    mentalSymptoms: "",
-    generalRemarks: "",
-    doctorObservations: "",
-    prescription: "",
-    photo: null,
-    photoPreview: null,
-  });
+dotenv.config();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+const app = express();
+const port = process.env.PORT || 10000;
 
-  const handlePhotoChange = async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      try {
-        let compressedFile = file;
-
-        if (file.size > 2 * 1024 * 1024) {
-          const options = {
-            maxSizeMB: 2,
-            maxWidthOrHeight: 1024,
-            useWebWorker: true,
-          };
-          compressedFile = await imageCompression(file, options);
-        }
-
-        setFormData((prev) => ({
-          ...prev,
-          photo: compressedFile,
-          photoPreview: URL.createObjectURL(compressedFile),
-        }));
-      } catch (error) {
-        console.error("Image compression error:", error);
-        alert("Failed to process the image.");
-      }
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const data = new FormData();
-    for (const key in formData) {
-      if (key !== "photoPreview") {
-        data.append(key, formData[key]);
-      }
-    }
-
-    // 🔄 Replace with actual API call
-    console.log("Submitted:", formData);
-    alert("Case Saved");
-  };
-
-  const renderInput = (label, name, type = "text") => (
-    <div className="flex items-start gap-4">
-      <label htmlFor={name} className="w-48 text-right pt-2 font-medium">
-        {label}
-      </label>
-      <input
-        id={name}
-        type={type}
-        name={name}
-        value={formData[name]}
-        onChange={handleChange}
-        placeholder={`Enter ${label}`}
-        className="flex-1 border border-gray-300 rounded px-3 py-2"
-      />
-    </div>
-  );
-
-  const renderTextarea = (label, name) => (
-    <div className="flex items-start gap-4">
-      <label htmlFor={name} className="w-48 text-right pt-2 font-medium">
-        {label}
-      </label>
-      <textarea
-        id={name}
-        name={name}
-        value={formData[name]}
-        onChange={handleChange}
-        placeholder={`Enter ${label}`}
-        className="flex-1 border border-gray-300 rounded px-3 py-2"
-        rows={3}
-      />
-    </div>
-  );
-
-  return (
-    <div className="p-6 max-w-4xl mx-auto bg-white shadow rounded">
-      <h2 className="text-2xl font-bold mb-6 text-center">New Case</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {renderInput("Name", "name")}
-        {renderInput("Age", "age")}
-        {renderInput("Gender", "gender")}
-        {renderInput("Marital Status", "maritalStatus")}
-        {renderInput("Occupation", "occupation")}
-        {renderInput("Address", "address")}
-        {renderInput("Phone", "phone")}
-        {renderInput("Date of Visit", "dateOfVisit", "date")}
-
-        {/* ✅ Photo Upload with Auto-Compression */}
-        <div className="flex items-start gap-4">
-          <label htmlFor="photo" className="w-48 text-right pt-2 font-medium">
-            Upload Photo
-          </label>
-          <div className="flex-1">
-            <input
-              type="file"
-              id="photo"
-              accept="image/*"
-              onChange={handlePhotoChange}
-              className="block border border-gray-300 rounded px-3 py-2"
-            />
-            {formData.photoPreview && (
-              <img
-                src={formData.photoPreview}
-                alt="Preview"
-                className="mt-2 w-32 h-32 object-cover rounded shadow"
-              />
-            )}
-          </div>
-        </div>
-
-        {renderTextarea("Chief Complaints", "chiefComplaints")}
-        {renderTextarea("History of Present Illness", "historyPresentIllness")}
-        {renderTextarea("Past History", "pastHistory")}
-        {renderTextarea("Family History", "familyHistory")}
-        {renderTextarea("Appetite", "appetite")}
-        {renderTextarea("Cravings & Aversions", "cravingsAversions")}
-        {renderTextarea("Thirst", "thirst")}
-        {renderTextarea("Bowel", "bowel")}
-        {renderTextarea("Urine", "urine")}
-        {renderTextarea("Sleep", "sleep")}
-        {renderTextarea("Dreams", "dreams")}
-        {renderTextarea("Sweat", "sweat")}
-        {renderTextarea("Thermal Nature (Hot/Cold)", "thermal")}
-        {renderTextarea("Habits", "habits")}
-        {renderTextarea("Menstrual History (if applicable)", "menstrual")}
-        {renderTextarea("Mental Symptoms", "mentalSymptoms")}
-        {renderTextarea("General Remarks", "generalRemarks")}
-        {renderTextarea("Doctor Observations", "doctorObservations")}
-        {renderTextarea("Prescription", "prescription")}
-
-        <div className="text-center pt-4">
-          <button
-            type="submit"
-            className="bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-700 transition"
-          >
-            Submit
-          </button>
-        </div>
-      </form>
-    </div>
-  );
+// CORS options
+const corsOptions = {
+  origin: 'https://bhanu-homeo-frontend.onrender.com',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  allowedHeaders: 'Content-Type, Authorization',
 };
 
-export default CaseSheetForm;
+app.use(cors(corsOptions));
+app.use(bodyParser.json());
+
+// Ensure uploads directory exists
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+
+// Multer setup with file size limit (2MB)
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB limit
+});
+
+// Route imports
+const caseRoutes = require('./routes/caseRoutes');
+const followUpRoutes = require('./routes/followUpRoutes');
+
+// Use routes
+app.use('/api/cases', caseRoutes);
+app.use('/api/followups', followUpRoutes);
+
+// MongoDB connection
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log('✅ Connected to MongoDB'))
+.catch((err) => console.error('❌ MongoDB connection error:', err.message));
+
+// Image analysis endpoint
+app.post('/analyze-image', upload.single('image'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).send('No image uploaded.');
+  }
+
+  try {
+    const model = await blazeface.load();
+    const imagePath = path.join(__dirname, 'uploads', req.file.filename);
+    const imageBuffer = fs.readFileSync(imagePath);
+    const imageTensor = tf.node.decodeImage(imageBuffer);
+    const predictions = await model.estimateFaces(imageTensor, false);
+    fs.unlinkSync(imagePath); // delete after processing
+    res.json({ message: 'Analysis completed', predictions });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error during image analysis.');
+  }
+});
+
+// 🧠 AI Case Analysis Endpoint
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+// Debug: Print API Key in logs (for debugging purposes)
+console.log('🔑 OpenAI API Key:', process.env.OPENAI_API_KEY);
+
+const openai = new OpenAIApi(configuration);
+
+app.post('/api/analyze-case', async (req, res) => {
+  try {
+    const { name, age, gender, symptoms, mindRubrics, imageBase64 } = req.body;
+
+    const prompt = `
+You are a top homeopathy expert. A patient case is submitted:
+
+Name: ${name}
+Age: ${age}
+Gender: ${gender}
+Symptoms: ${symptoms}
+Mind Rubrics: ${mindRubrics}
+
+Based on this case, provide:
+1. Best remedy with reason
+2. Miasmatic interpretation
+3. Constitutional logic
+4. Repertory logic
+5. Materia Medica match
+6. 2-3 similar remedies with reasons
+`;
+
+    const completion = await openai.createChatCompletion({
+      model: "gpt-4",
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    const analysis = completion.data.choices[0].message.content;
+    res.json({ success: true, analysis });
+  } catch (error) {
+    console.error('AI Error:', error.message);
+    res.status(500).json({ success: false, error: 'AI analysis failed' });
+  }
+});
+
+// Start the server
+app.listen(port, () => {
+  console.log(`🚀 Server running on port ${port}`);
+});
