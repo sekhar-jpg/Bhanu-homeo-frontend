@@ -232,7 +232,11 @@ const CaseSheetForm = () => {
       <button onClick={addPrescription}>+ Add Prescription</button>
 
       {/* Submit Button */}
-      <button onClick={handleSubmit}>Submit</button>
+      <div>
+        <button onClick={handleSubmit} style={{ marginTop: "20px" }}>
+          Submit
+        </button>
+      </div>
     </div>
   );
 };
