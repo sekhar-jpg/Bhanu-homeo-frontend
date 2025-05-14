@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios"; // Import Axios
 import Input from "@/components/ui/input";
 import Textarea from "@/components/ui/textarea";
 
@@ -27,9 +28,21 @@ const NewCase = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitted Data:", formData);
+    
+    try {
+      // Post data to backend
+      const response = await axios.post(
+        "https://backend-bhanu-app.onrender.com/submit-case", // Replace with your actual backend URL
+        formData
+      );
+      console.log("Case submitted successfully:", response.data);
+      alert("Case submitted successfully!");
+    } catch (error) {
+      console.error("Error submitting case:", error);
+      alert("Error submitting case. Please try again.");
+    }
   };
 
   return (
