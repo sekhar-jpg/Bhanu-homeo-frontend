@@ -1,46 +1,62 @@
-// src/components/CaseView.jsx
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios"; // Import Axios
 
-const CaseView = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [caseData, setCaseData] = useState(null);
+const ViewCases = () => {
+  const [cases, setCases] = useState([]); // State to store the list of cases
+  const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
-    axios.get(https://backend-bhanu-app.onrender.com/cases/${id}`)
-      .then(res => setCaseData(res.data))
-      .catch(err => console.error('Error fetching case:', err));
-  }, [id]);
+    // Fetch all cases when the component mounts
+    const fetchCases = async () => {
+      try {
+        const response = await axios.get("https://backend-bhanu-app.onrender.com/cases"); // Replace with your backend URL
+        setCases(response.data); // Store cases in state
+        setLoading(false); // Set loading to false
+      } catch (error) {
+        console.error("Error fetching cases:", error);
+        setLoading(false); // Set loading to false even in case of an error
+      }
+    };
 
-  const handleDelete = () => {
-    if (window.confirm('Are you sure to delete this case?')) {
-      axios.delete(https://backend-bhanu-app.onrender.com/cases/${id}`)
-        .then(() => {
-          alert('Case deleted');
-          navigate('/');
-        })
-        .catch(err => alert('Error deleting case'));
-    }
-  };
+    fetchCases();
+  }, []); // Empty dependency array means it runs once when the component mounts
 
-  if (!caseData) return <div>Loading...</div>;
+  if (loading) {
+    return <div>Loading...</div>; // Show loading text while fetching data
+  }
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Case Details</h2>
-      <div className="bg-white rounded p-4 shadow">
-        <pre>{JSON.stringify(caseData, null, 2)}</pre>
-      </div>
-      <div className="mt-4 flex gap-4">
-        <button onClick={handleDelete} className="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
-        <button onClick={() => navigate(`/edit/${id}`)} className="bg-yellow-500 text-white px-4 py-2 rounded">Edit</button>
-        <button onClick={() => navigate(`/followup/${id}`)} className="bg-blue-500 text-white px-4 py-2 rounded">Add Follow-Up</button>
-        <button onClick={() => navigate('/')} className="bg-gray-500 text-white px-4 py-2 rounded">Back</button>
-      </div>
+    <div className="max-w-3xl mx-auto p-6 font-sans">
+      <h2 className="text-2xl font-semibold mb-6">All Cases</h2>
+
+      {cases.length === 0 ? (
+        <p>No cases found.</p> // Show message if no cases are found
+      ) : (
+        <table className="min-w-full border-collapse">
+          <thead>
+            <tr>
+              <th className="border p-2">Name</th>
+              <th className="border p-2">Age</th>
+              <th className="border p-2">Gender</th>
+              <th className="border p-2">Phone</th>
+              <th className="border p-2">Date of Visit</th>
+            </tr>
+          </thead>
+          <tbody>
+            {cases.map((caseItem) => (
+              <tr key={caseItem._id}>
+                <td className="border p-2">{caseItem.name}</td>
+                <td className="border p-2">{caseItem.age}</td>
+                <td className="border p-2">{caseItem.gender}</td>
+                <td className="border p-2">{caseItem.phone}</td>
+                <td className="border p-2">{caseItem.dateOfVisit}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };
 
-export default CaseView;
+export default ViewCases;
