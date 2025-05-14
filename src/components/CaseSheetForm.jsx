@@ -77,7 +77,6 @@ const CaseSheetForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic
     console.log("Case data submitted:", caseData);
   };
 
@@ -89,20 +88,145 @@ const CaseSheetForm = () => {
       <div>
         <label>Upload Face Image: </label>
         <input type="file" accept="image/*" onChange={handleImageUpload} />
+        <p>{caseData.image ? caseData.image.name : "No file chosen"}</p>
       </div>
 
       {/* Basic Info */}
       <h3>Basic Information</h3>
-      {/* Add other inputs here */}
+      <div>
+        <label>Name:</label>
+        <input
+          name="name"
+          placeholder="Enter Name"
+          value={caseData.name}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      <div>
+        <label>Age:</label>
+        <input
+          name="age"
+          placeholder="Enter Age"
+          value={caseData.age}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      <div>
+        <label>Gender:</label>
+        <input
+          name="gender"
+          placeholder="Enter Gender"
+          value={caseData.gender}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      <div>
+        <label>Marital Status:</label>
+        <input
+          name="maritalStatus"
+          placeholder="Enter Marital Status"
+          value={caseData.maritalStatus}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      <div>
+        <label>Occupation:</label>
+        <input
+          name="occupation"
+          placeholder="Enter Occupation"
+          value={caseData.occupation}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      <div>
+        <label>Address:</label>
+        <input
+          name="address"
+          placeholder="Enter Address"
+          value={caseData.address}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      <div>
+        <label>Phone / WhatsApp:</label>
+        <input
+          name="phone"
+          placeholder="Enter Phone Number"
+          value={caseData.phone}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      <div>
+        <label>Date of Visit:</label>
+        <input
+          name="dateOfVisit"
+          type="date"
+          value={caseData.dateOfVisit}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      {/* Chief Complaints */}
+      <h3>Chief Complaints</h3>
+      {caseData.chiefComplaints.map((cc, index) => (
+        <div key={index}>
+          <input
+            name="complaint"
+            placeholder="Complaint"
+            value={cc.complaint}
+            onChange={(e) => handleChiefComplaintChange(index, e)}
+          />
+          <input
+            name="duration"
+            placeholder="Duration"
+            value={cc.duration}
+            onChange={(e) => handleChiefComplaintChange(index, e)}
+          />
+          <input
+            name="description"
+            placeholder="Description"
+            value={cc.description}
+            onChange={(e) => handleChiefComplaintChange(index, e)}
+          />
+        </div>
+      ))}
+      <button onClick={addChiefComplaint}>+ Add Complaint</button>
 
       {/* Prescription */}
       <h3>Prescription</h3>
       {caseData.prescription.map((p, index) => (
         <div key={index}>
-          <input type="date" name="date" value={p.date} onChange={(e) => handlePrescriptionChange(index, e)} />
-          <input name="remedyName" placeholder="Remedy" value={p.remedyName} onChange={(e) => handlePrescriptionChange(index, e)} />
-          <input name="potency" placeholder="Potency" value={p.potency} onChange={(e) => handlePrescriptionChange(index, e)} />
-          <input name="dose" placeholder="Dose" value={p.dose} onChange={(e) => handlePrescriptionChange(index, e)} />
+          <input
+            type="date"
+            name="date"
+            value={p.date}
+            onChange={(e) => handlePrescriptionChange(index, e)}
+          />
+          <input
+            name="remedyName"
+            placeholder="Remedy"
+            value={p.remedyName}
+            onChange={(e) => handlePrescriptionChange(index, e)}
+          />
+          <input
+            name="potency"
+            placeholder="Potency"
+            value={p.potency}
+            onChange={(e) => handlePrescriptionChange(index, e)}
+          />
+          <input
+            name="dose"
+            placeholder="Dose"
+            value={p.dose}
+            onChange={(e) => handlePrescriptionChange(index, e)}
+          />
         </div>
       ))}
       <button onClick={addPrescription}>+ Add Prescription</button>
