@@ -10,114 +10,154 @@ const CaseSheetForm = () => {
     address: "",
     phone: "",
     dateOfVisit: "",
+    chiefComplaints: [{ complaint: "", duration: "", description: "" }],
+    presentIllness: "",
+    pastHistory: {
+      childhoodDiseases: "",
+      surgeriesInjuries: "",
+      majorIllnesses: "",
+    },
+    familyHistory: "",
+    personalHistory: {
+      appetite: "",
+      cravingsAversions: "",
+      thirst: "",
+      bowel: "",
+      urine: "",
+      sleep: "",
+      dreams: "",
+      sweat: "",
+      thermal: "",
+      habits: "",
+      menstrual: "",
+    },
+    mentalSymptoms: "",
+    generalRemarks: "",
+    observationsByDoctor: "",
+    prescription: [{ date: "", remedyName: "", potency: "", dose: "" }],
     image: null,
-    // other fields...
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setCaseData((prev) => ({ ...prev, [name]: value }));
+    setCaseData({ ...caseData, [name]: value });
   };
 
-  const handleImageChange = (e) => {
-    setCaseData((prev) => ({ ...prev, image: e.target.files[0] }));
+  const handleChiefComplaintChange = (index, e) => {
+    const { name, value } = e.target;
+    const updatedComplaints = [...caseData.chiefComplaints];
+    updatedComplaints[index][name] = value;
+    setCaseData({ ...caseData, chiefComplaints: updatedComplaints });
+  };
+
+  const addChiefComplaint = () => {
+    setCaseData({
+      ...caseData,
+      chiefComplaints: [...caseData.chiefComplaints, { complaint: "", duration: "", description: "" }],
+    });
+  };
+
+  const handlePrescriptionChange = (index, e) => {
+    const { name, value } = e.target;
+    const updatedPrescriptions = [...caseData.prescription];
+    updatedPrescriptions[index][name] = value;
+    setCaseData({ ...caseData, prescription: updatedPrescriptions });
+  };
+
+  const addPrescription = () => {
+    setCaseData({
+      ...caseData,
+      prescription: [...caseData.prescription, { date: "", remedyName: "", potency: "", dose: "" }],
+    });
+  };
+
+  const handleImageUpload = (e) => {
+    setCaseData({ ...caseData, image: e.target.files[0] });
   };
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2>🧾 New Case Entry</h2>
+      <h2>Case Sheet</h2>
 
-      {/* Face Upload */}
+      {/* Image Upload */}
       <div>
-        <label>Upload Face Image:</label>
-        <input type="file" accept="image/*" onChange={handleImageChange} />
-        {caseData.image && (
-          <img
-            src={URL.createObjectURL(caseData.image)}
-            alt="Preview"
-            width="100"
-            style={{ marginTop: "10px", borderRadius: "8px" }}
-          />
-        )}
+        <label>Upload Face Image: </label>
+        <input type="file" accept="image/*" onChange={handleImageUpload} />
       </div>
 
       {/* Basic Info */}
-      <h3>1. Basic Patient Information</h3>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-        <div>
-          <label>Name:</label>
-          <input
-            type="text"
-            name="name"
-            value={caseData.name}
-            onChange={handleInputChange}
-            placeholder="Enter patient name"
-          />
+      <h3>Basic Information</h3>
+      <input name="name" placeholder="Name" value={caseData.name} onChange={handleInputChange} />
+      <input name="age" placeholder="Age" value={caseData.age} onChange={handleInputChange} />
+      <input name="gender" placeholder="Gender" value={caseData.gender} onChange={handleInputChange} />
+      <input name="maritalStatus" placeholder="Marital Status" value={caseData.maritalStatus} onChange={handleInputChange} />
+      <input name="occupation" placeholder="Occupation" value={caseData.occupation} onChange={handleInputChange} />
+      <input name="address" placeholder="Address" value={caseData.address} onChange={handleInputChange} />
+      <input name="phone" placeholder="Phone / WhatsApp" value={caseData.phone} onChange={handleInputChange} />
+      <input name="dateOfVisit" type="date" value={caseData.dateOfVisit} onChange={handleInputChange} />
+
+      {/* Chief Complaints */}
+      <h3>Chief Complaints</h3>
+      {caseData.chiefComplaints.map((cc, index) => (
+        <div key={index}>
+          <input name="complaint" placeholder="Complaint" value={cc.complaint} onChange={(e) => handleChiefComplaintChange(index, e)} />
+          <input name="duration" placeholder="Duration" value={cc.duration} onChange={(e) => handleChiefComplaintChange(index, e)} />
+          <input name="description" placeholder="Description" value={cc.description} onChange={(e) => handleChiefComplaintChange(index, e)} />
         </div>
-        <div>
-          <label>Age:</label>
-          <input
-            type="number"
-            name="age"
-            value={caseData.age}
-            onChange={handleInputChange}
-            placeholder="e.g. 35"
-          />
+      ))}
+      <button onClick={addChiefComplaint}>+ Add Complaint</button>
+
+      <h3>History of Present Illness</h3>
+      <textarea name="presentIllness" value={caseData.presentIllness} onChange={handleInputChange} />
+
+      <h3>Past History</h3>
+      <input name="childhoodDiseases" placeholder="Childhood diseases" value={caseData.pastHistory.childhoodDiseases} onChange={(e) => setCaseData({ ...caseData, pastHistory: { ...caseData.pastHistory, childhoodDiseases: e.target.value } })} />
+      <input name="surgeriesInjuries" placeholder="Surgeries / Injuries" value={caseData.pastHistory.surgeriesInjuries} onChange={(e) => setCaseData({ ...caseData, pastHistory: { ...caseData.pastHistory, surgeriesInjuries: e.target.value } })} />
+      <input name="majorIllnesses" placeholder="Major illnesses" value={caseData.pastHistory.majorIllnesses} onChange={(e) => setCaseData({ ...caseData, pastHistory: { ...caseData.pastHistory, majorIllnesses: e.target.value } })} />
+
+      <h3>Family History</h3>
+      <textarea name="familyHistory" value={caseData.familyHistory} onChange={handleInputChange} />
+
+      <h3>Personal History</h3>
+      {Object.keys(caseData.personalHistory).map((key) => (
+        <input
+          key={key}
+          name={key}
+          placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
+          value={caseData.personalHistory[key]}
+          onChange={(e) =>
+            setCaseData({
+              ...caseData,
+              personalHistory: {
+                ...caseData.personalHistory,
+                [key]: e.target.value,
+              },
+            })
+          }
+        />
+      ))}
+
+      <h3>Mental Symptoms</h3>
+      <textarea name="mentalSymptoms" value={caseData.mentalSymptoms} onChange={handleInputChange} />
+
+      <h3>General Remarks</h3>
+      <textarea name="generalRemarks" value={caseData.generalRemarks} onChange={handleInputChange} />
+
+      <h3>Observations by Doctor</h3>
+      <textarea name="observationsByDoctor" value={caseData.observationsByDoctor} onChange={handleInputChange} />
+
+      <h3>Prescription</h3>
+      {caseData.prescription.map((p, index) => (
+        <div key={index}>
+          <input type="date" name="date" value={p.date} onChange={(e) => handlePrescriptionChange(index, e)} />
+          <input name="remedyName" placeholder="Remedy" value={p.remedyName} onChange={(e) => handlePrescriptionChange(index, e)} />
+          <input name="potency" placeholder="Potency" value={p.potency} onChange={(e) => handlePrescriptionChange(index, e)} />
+          <input name="dose" placeholder="Dose" value={p.dose} onChange={(e) => handlePrescriptionChange(index, e)} />
         </div>
-        <div>
-          <label>Gender:</label>
-          <select name="gender" value={caseData.gender} onChange={handleInputChange}>
-            <option value="">Select</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-        <div>
-          <label>Marital Status:</label>
-          <input
-            type="text"
-            name="maritalStatus"
-            value={caseData.maritalStatus}
-            onChange={handleInputChange}
-            placeholder="e.g. Married / Unmarried"
-          />
-        </div>
-        <div>
-          <label>Occupation:</label>
-          <input
-            type="text"
-            name="occupation"
-            value={caseData.occupation}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div>
-          <label>Address:</label>
-          <textarea
-            name="address"
-            value={caseData.address}
-            onChange={handleInputChange}
-            placeholder="Full address"
-          />
-        </div>
-        <div>
-          <label>Phone / WhatsApp:</label>
-          <input
-            type="text"
-            name="phone"
-            value={caseData.phone}
-            onChange={handleInputChange}
-            placeholder="e.g. 9876543210"
-          />
-        </div>
-        <div>
-          <label>Date of Visit:</label>
-          <input
-            type="date"
-            name="dateOfVisit"
-            value={caseData.dateOfVisit}
-            onChange={handleInputChange}
-          />
-        </div>
-      </div>
+      ))}
+      <button onClick={addPrescription}>+ Add Prescription</button>
+    </div>
+  );
+};
+
+export default CaseSheetForm;
