@@ -34,7 +34,7 @@ const CaseSheetForm = () => {
     mentalSymptoms: "",
     generalRemarks: "",
     observationsByDoctor: "",
-    prescription: [{ date: "", remedyName: "", potency: "", dose: "" }],
+    prescription: [{ date: "", remedyName: "", potency: "", dose: "", instructions: "" }],
     image: null,
   });
 
@@ -67,7 +67,7 @@ const CaseSheetForm = () => {
   const addPrescription = () => {
     setCaseData({
       ...caseData,
-      prescription: [...caseData.prescription, { date: "", remedyName: "", potency: "", dose: "" }],
+      prescription: [...caseData.prescription, { date: "", remedyName: "", potency: "", dose: "", instructions: "" }],
     });
   };
 
@@ -92,7 +92,7 @@ const CaseSheetForm = () => {
       </div>
 
       {/* Basic Info */}
-      <h3>Basic Information</h3>
+      <h3>1. Basic Patient Information</h3>
       <div>
         <label>Name:</label>
         <input
@@ -104,17 +104,13 @@ const CaseSheetForm = () => {
       </div>
 
       <div>
-        <label>Age:</label>
+        <label>Age / Gender:</label>
         <input
           name="age"
           placeholder="Enter Age"
           value={caseData.age}
           onChange={handleInputChange}
         />
-      </div>
-
-      <div>
-        <label>Gender:</label>
         <input
           name="gender"
           placeholder="Enter Gender"
@@ -173,8 +169,34 @@ const CaseSheetForm = () => {
         />
       </div>
 
+      {/* Chief Complaints */}
+      <h3>2. Chief Complaints</h3>
+      {caseData.chiefComplaints.map((cc, index) => (
+        <div key={index}>
+          <input
+            name="complaint"
+            placeholder="Complaint"
+            value={cc.complaint}
+            onChange={(e) => handleChiefComplaintChange(index, e)}
+          />
+          <input
+            name="duration"
+            placeholder="Duration"
+            value={cc.duration}
+            onChange={(e) => handleChiefComplaintChange(index, e)}
+          />
+          <input
+            name="description"
+            placeholder="Description"
+            value={cc.description}
+            onChange={(e) => handleChiefComplaintChange(index, e)}
+          />
+        </div>
+      ))}
+      <button onClick={addChiefComplaint}>+ Add Complaint</button>
+
       {/* History of Present Illness */}
-      <h3>History of Present Illness</h3>
+      <h3>3. History of Present Illness</h3>
       <div>
         <textarea
           name="historyPresentIllness"
@@ -185,7 +207,7 @@ const CaseSheetForm = () => {
       </div>
 
       {/* Past History */}
-      <h3>Past History</h3>
+      <h3>4. Past History</h3>
       <div>
         <label>Childhood Diseases:</label>
         <input
@@ -232,7 +254,7 @@ const CaseSheetForm = () => {
       </div>
 
       {/* Family History */}
-      <h3>Family History</h3>
+      <h3>5. Family History</h3>
       <div>
         <textarea
           name="familyHistory"
@@ -243,7 +265,7 @@ const CaseSheetForm = () => {
       </div>
 
       {/* Personal History */}
-      <h3>Personal History</h3>
+      <h3>6. Personal History</h3>
       {Object.keys(caseData.personalHistory).map((key) => (
         <div key={key}>
           <label>{key.charAt(0).toUpperCase() + key.slice(1)}:</label>
@@ -262,7 +284,7 @@ const CaseSheetForm = () => {
       ))}
 
       {/* Mental Symptoms */}
-      <h3>Mental Symptoms</h3>
+      <h3>7. Mental Symptoms</h3>
       <div>
         <textarea
           name="mentalSymptoms"
@@ -273,7 +295,7 @@ const CaseSheetForm = () => {
       </div>
 
       {/* General Remarks */}
-      <h3>General Remarks</h3>
+      <h3>8. General Remarks</h3>
       <div>
         <textarea
           name="generalRemarks"
@@ -284,7 +306,7 @@ const CaseSheetForm = () => {
       </div>
 
       {/* Observations by Doctor */}
-      <h3>Observations by Doctor</h3>
+      <h3>9. Observations by Doctor</h3>
       <div>
         <textarea
           name="observationsByDoctor"
@@ -322,18 +344,6 @@ const CaseSheetForm = () => {
             value={p.dose}
             onChange={(e) => handlePrescriptionChange(index, e)}
           />
-        </div>
-      ))}
-      <button onClick={addPrescription}>+ Add Prescription</button>
-
-      {/* Submit Button */}
-      <div>
-        <button onClick={handleSubmit} style={{ marginTop: "20px" }}>
-          Submit
-        </button>
-      </div>
-    </div>
-  );
-};
-
-export default CaseSheetForm;
+          <input
+            name="instructions"
+            placeholder="
