@@ -299,7 +299,7 @@ function CaseSheetForm() {
           onChange={handleInputChange}
         />
 
-        {/* General Remarks */}
+                {/* General Remarks */}
         <h3>General Remarks</h3>
         <textarea
           name="generalRemarks"
@@ -355,3 +355,27 @@ function CaseSheetForm() {
                 onChange={(e) => handlePrescriptionChange(index, e)}
               />
             </div>
+            <div>
+              <label>Instructions:</label>
+              <input
+                type="text"
+                name="instructions"
+                value={prescription.instructions}
+                onChange={(e) => handlePrescriptionChange(index, e)}
+              />
+            </div>
+            <button type="button" onClick={() => removePrescription(index)}>Remove</button>
+            <hr />
+          </div>
+        ))}
+        <button type="button" onClick={addPrescription}>Add Prescription</button>
+
+        {/* Submit Button */}
+        <br />
+        <button type="submit">Submit Case</button>
+      </form>
+    </div>
+  );
+};
+
+export default CaseSheetForm;
