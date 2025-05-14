@@ -11,7 +11,7 @@ const CaseSheetForm = () => {
     phone: "",
     dateOfVisit: "",
     chiefComplaints: [{ complaint: "", duration: "", description: "" }],
-    presentIllness: "",
+    historyPresentIllness: "",
     pastHistory: {
       childhoodDiseases: "",
       surgeriesInjuries: "",
@@ -173,31 +173,126 @@ const CaseSheetForm = () => {
         />
       </div>
 
-      {/* Chief Complaints */}
-      <h3>Chief Complaints</h3>
-      {caseData.chiefComplaints.map((cc, index) => (
-        <div key={index}>
+      {/* History of Present Illness */}
+      <h3>History of Present Illness</h3>
+      <div>
+        <textarea
+          name="historyPresentIllness"
+          placeholder="Detailed development of complaints"
+          value={caseData.historyPresentIllness}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      {/* Past History */}
+      <h3>Past History</h3>
+      <div>
+        <label>Childhood Diseases:</label>
+        <input
+          name="childhoodDiseases"
+          placeholder="Enter Childhood Diseases"
+          value={caseData.pastHistory.childhoodDiseases}
+          onChange={(e) =>
+            setCaseData({
+              ...caseData,
+              pastHistory: { ...caseData.pastHistory, childhoodDiseases: e.target.value },
+            })
+          }
+        />
+      </div>
+
+      <div>
+        <label>Surgeries / Injuries:</label>
+        <input
+          name="surgeriesInjuries"
+          placeholder="Enter Surgeries / Injuries"
+          value={caseData.pastHistory.surgeriesInjuries}
+          onChange={(e) =>
+            setCaseData({
+              ...caseData,
+              pastHistory: { ...caseData.pastHistory, surgeriesInjuries: e.target.value },
+            })
+          }
+        />
+      </div>
+
+      <div>
+        <label>Major Illnesses:</label>
+        <input
+          name="majorIllnesses"
+          placeholder="Enter Major Illnesses"
+          value={caseData.pastHistory.majorIllnesses}
+          onChange={(e) =>
+            setCaseData({
+              ...caseData,
+              pastHistory: { ...caseData.pastHistory, majorIllnesses: e.target.value },
+            })
+          }
+        />
+      </div>
+
+      {/* Family History */}
+      <h3>Family History</h3>
+      <div>
+        <textarea
+          name="familyHistory"
+          placeholder="Any history of: Diabetes, Hypertension, Cancer, Skin Disease, etc."
+          value={caseData.familyHistory}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      {/* Personal History */}
+      <h3>Personal History</h3>
+      {Object.keys(caseData.personalHistory).map((key) => (
+        <div key={key}>
+          <label>{key.charAt(0).toUpperCase() + key.slice(1)}:</label>
           <input
-            name="complaint"
-            placeholder="Complaint"
-            value={cc.complaint}
-            onChange={(e) => handleChiefComplaintChange(index, e)}
-          />
-          <input
-            name="duration"
-            placeholder="Duration"
-            value={cc.duration}
-            onChange={(e) => handleChiefComplaintChange(index, e)}
-          />
-          <input
-            name="description"
-            placeholder="Description"
-            value={cc.description}
-            onChange={(e) => handleChiefComplaintChange(index, e)}
+            name={key}
+            placeholder={`Enter ${key.charAt(0).toUpperCase() + key.slice(1)}`}
+            value={caseData.personalHistory[key]}
+            onChange={(e) =>
+              setCaseData({
+                ...caseData,
+                personalHistory: { ...caseData.personalHistory, [key]: e.target.value },
+              })
+            }
           />
         </div>
       ))}
-      <button onClick={addChiefComplaint}>+ Add Complaint</button>
+
+      {/* Mental Symptoms */}
+      <h3>Mental Symptoms</h3>
+      <div>
+        <textarea
+          name="mentalSymptoms"
+          placeholder="e.g., Fear, Anxiety, Sadness, Anger, Jealousy, Lack of Confidence, etc."
+          value={caseData.mentalSymptoms}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      {/* General Remarks */}
+      <h3>General Remarks</h3>
+      <div>
+        <textarea
+          name="generalRemarks"
+          placeholder="Energy level, daily routine, stress, etc."
+          value={caseData.generalRemarks}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      {/* Observations by Doctor */}
+      <h3>Observations by Doctor</h3>
+      <div>
+        <textarea
+          name="observationsByDoctor"
+          placeholder="e.g., Face color, expressions, posture, behavior in clinic, etc."
+          value={caseData.observationsByDoctor}
+          onChange={handleInputChange}
+        />
+      </div>
 
       {/* Prescription */}
       <h3>Prescription</h3>
