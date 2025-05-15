@@ -2,16 +2,16 @@
   "name": "bhanu-frontend",
   "version": "1.0.0",
   "private": true,
-  "homepage": ".",
   "dependencies": {
-    "axios": "^1.6.0",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.4.3",
+    "axios": "^1.6.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.3",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4",
-    "react-webcam": "^7.0.1",
-    "browser-image-compression": "^2.0.1"
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -21,10 +21,17 @@
     "postbuild": "cp public/_redirects build/_redirects"
   },
   "eslintConfig": {
-    "extends": ["react-app", "react-app/jest"]
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   },
   "browserslist": {
-    "production": [">0.2%", "not dead", "not op_mini all"],
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
